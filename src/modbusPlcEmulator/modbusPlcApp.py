@@ -20,7 +20,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_login import LoginManager, login_required
 
 import modbusPlcGlobal as gv
-import plcServerAuth
+import modbusPlcAuth
 import plcDataMgr
 
 #-----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ def createApp():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = gv.APP_SEC_KEY
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(seconds=gv.COOKIE_TIME)
-    from plcServerAuth import auth as auth_blueprint
+    from modbusPlcAuth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
     # Create the user login manager
     loginMgr = LoginManager()
@@ -39,7 +39,7 @@ def createApp():
     loginMgr.init_app(app)
     @loginMgr.user_loader
     def loadUser(userID):
-        return plcServerAuth.User(userID)
+        return modbusPlcAuth.User(userID)
     return app
 
 # Init the PLC function thread.
