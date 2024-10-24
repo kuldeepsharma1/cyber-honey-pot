@@ -58,16 +58,6 @@ def index():
     posts = {'page':
              0}  # page index is used to highlight the left page slide bar.
     return render_template('index.html', posts=posts)
-
-#-----------------------------------------------------------------------------
-@app.route('/userlogin/<string:username>/<string:password>')
-def userlogin(username, password):
-    """ Add CGI for participants to brute force break the login credential."""
-    username = str(username)
-    password = str(password)
-    if username == gv.gUser and password == gv.gPassword:
-        return "You got correct credential!"
-    return "User name or password incorrect!"
     
 #-----------------------------------------------------------------------------
 @app.route('/ladderlogic')
