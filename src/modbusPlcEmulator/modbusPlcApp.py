@@ -21,7 +21,7 @@ from flask_login import LoginManager, login_required
 
 import modbusPlcGlobal as gv
 import modbusPlcAuth
-import plcDataMgr
+import modbusPlcDataMgr
 
 #-----------------------------------------------------------------------------
 # Init the flask web app program.
@@ -43,7 +43,7 @@ def createApp():
     return app
 
 # Init the PLC function thread.
-gv.iPlcDataMgr = plcDataMgr.DataManager(None)
+gv.iPlcDataMgr = modbusPlcDataMgr.DataManager(None)
 gv.iPlcDataMgr.start()
 # Init the Web UI thread.
 app = createApp()
