@@ -4,12 +4,25 @@
 
 {% block style%} <style></style> {% endblock %}
 
+
+{% block script %} 
+
+<script>
+    // Function to auto-refresh the page
+    function timedRefresh(timeoutPeriod) {
+        setTimeout("location.reload(true);",timeoutPeriod);
+    }
+    window.onload = timedRefresh(2000); // refresh every 2 sec.
+</script>
+
+{% endblock %}
+
 {% block mgmContent %}
 
 <ul class="list-group">
 
     <li class="list-group-item">
-        <h3> <b class="text-success"> PLC State </b></h3>
+        <h3> <b class="text-success"> PLC Contact and Coil State </b></h3>
     </li>
     <br>
     <div class="row">
@@ -17,7 +30,7 @@
 
             <li class="list-group-item">   
                 <b class="text-success">PLC Input Group</b> 
-                <br>
+                <p> </p>
                 <table class="table table-bordered table-sm">
                     <thead class="table-dark">
                       <tr>
@@ -28,12 +41,22 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>%I0.0</td>
-                        <td><span class="badge bg-success">5v</span></td>
-                        <td>%HR0.0</td>
-                        <td><span class="badge bg-dark"> 1 </span></td>
-                      </tr>
+                        {% for regVal in posts["registerVal"] %}
+                        <tr>
+                            <td>%I0.{{loop.index0}}</td>
+                            {% if regVal==1%}
+                                <td><span class="badge bg-success">{{posts["inputVol"][loop.index0]}} V</span></td>
+                            {% else %}
+                                <td><span class="badge bg-dark"> 0 V </span></td>
+                            {% endif%}
+                            <td>%HR0.{{loop.index0}}</td>
+                            {% if regVal==1%}
+                                <td><span class="badge bg-success">1</span></td>
+                            {% else %}
+                                <td><span class="badge bg-warning"> 0 </span></td>
+                            {% endif%}
+                        </tr>
+                        {% endfor%}
                     </tbody>
                   </table>
             </li>
@@ -43,6 +66,8 @@
 
             <li class="list-group-item">   
                 <b class="text-success">PLC Ladder Diagram</b> 
+                <p> </p>
+                <img src="{{url_for('static', filename='img/testladderlogic.png')}}" style="height:400px;" class="rounded">
             </li>
 
         </div>
@@ -51,6 +76,35 @@
 
             <li class="list-group-item">   
                 <b class="text-success">PLC Output group</b> 
+                <p> </p>
+                <table class="table table-bordered table-sm">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Coil</th>
+                        <th>Value</th>
+                        <th>Output</th>
+                        <th>Voltage</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for coilVal in posts["coilVal"] %}
+                        <tr>
+                            <td>%Q0.{{loop.index0}}</td>
+                            {% if coilVal%}
+                                <td><span class="badge bg-success">{{coilVal}}</span></td>
+                            {% else %}
+                                <td><span class="badge bg-warning">{{coilVal}}</span></td>
+                            {% endif%}
+                            <td>%O0.{{loop.index0}}</td>
+                            {% if coilVal%}
+                                <td><span class="badge bg-success">{{posts["outputVol"][loop.index0]}} V</span></td>
+                            {% else %}
+                                <td><span class="badge bg-dark"> 0 V </span></td>
+                            {% endif%}
+                        </tr>
+                        {% endfor%}
+                    </tbody>
+                  </table>
             </li>
 
         </div>

@@ -55,8 +55,7 @@ app = createApp()
 @app.route('/index')
 def index():
     """ route to introduction index page."""
-    posts = {'page':
-             0}  # page index is used to highlight the left page slide bar.
+    posts = {'page': 0}  # page index is used to highlight the left page slide bar.
     return render_template('index.html', posts=posts)
     
 #-----------------------------------------------------------------------------
@@ -64,10 +63,11 @@ def index():
 @login_required
 def plcstate():
     """ route to the ladder logic page."""
-    posts = {
-                'page': 1,
-                'flag': str(gv.gFlagStr)
-            }
+    posts = {'page': 1, 
+             'ladderdiagram': gv.gladderPic
+             }
+    stateData = gv.iPlcDataMgr.getPlcStateDict()
+    posts.update(stateData)
     return render_template('plcstate.html', posts=posts)
 
 #-----------------------------------------------------------------------------

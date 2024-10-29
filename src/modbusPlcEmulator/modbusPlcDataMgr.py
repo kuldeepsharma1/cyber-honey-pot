@@ -16,6 +16,7 @@
 #-----------------------------------------------------------------------------
 
 import time
+import random
 import threading
 
 import modbusPlcGlobal as gv
@@ -33,7 +34,7 @@ class testLadderLogic(modbusTcpCom.ladderLogic):
         self.holdingRegsInfo['address'] = 0
         self.holdingRegsInfo['offset'] = 8
         self.destCoilsInfo['address'] = 0
-        self.destCoilsInfo['offset'] = 4
+        self.destCoilsInfo['offset'] = 8
 
     def runLadderLogic(self, regsList, coilList=None):
         # coils will be set ast the reverse state of the input registers' state. 
@@ -90,6 +91,12 @@ class DataManager(threading.Thread):
     def getAllowWipList(self):
         return self.dataMgr.getAllowWriteIpaddresses()
 
+    def getAllRegistersVal(self):
+        return self.dataMgr.getHoldingRegState(0, 8)
+
+    def getAllCoilsVal(self):
+        return self.dataMgr.getCoilState(0, 8)
+
     #-----------------------------------------------------------------------------
     def run(self):
         """ Thread run() function call by start(). """
@@ -104,3 +111,23 @@ class DataManager(threading.Thread):
 
     def resetAllowWipList(self):
         return self.dataMgr.setAllowWriteIpaddresses(list(gv.ALLOW_W_L).copy())
+
+    def getPlcStateDict(self):
+        stateDict = {
+            'inputVol':[],
+            'registerVal':[],
+            'coilVal':[],
+            'outputVol':[]
+        }
+        for val in self.getAllRegistersVal():
+            stateDict['registerVal'].append(val)
+            voltage = round(5 + random.uniform(-0.05, 0.05),2) if val else 0 
+            stateDict['inputVol'].append(voltage)
+        
+        for val in self.getAllCoilsVal():
+            stateDict['coilVal'].append(val)
+            voltage = 5 if val else 0
+            stateDict['outputVol'].append(voltage)
+
+        return stateDict
+

@@ -87,6 +87,8 @@ gHostPort = 502
 gUser = CONFIG_DICT['USER']
 gPassword = CONFIG_DICT['PASSWORD']
 # PLC IT flag
+gladderPic = 'ladderlogic'
+
 gFlagStr = CONFIG_DICT['FLG_STR']
 # Flask App parameters : 
 gflaskHost = '0.0.0.0'
