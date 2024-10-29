@@ -84,12 +84,13 @@ ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
 gPlcHostIp = '0.0.0.0'
 gHostPort = 502
 # PLC admin user credential:
-gUser = CONFIG_DICT['USER']
-gPassword = CONFIG_DICT['PASSWORD']
+gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])
+
+#gUser = CONFIG_DICT['USER']
+#gPassword = CONFIG_DICT['PASSWORD']
 # PLC IT flag
 gladderPic = 'ladderlogic'
 
-gFlagStr = CONFIG_DICT['FLG_STR']
 # Flask App parameters : 
 gflaskHost = '0.0.0.0'
 gflaskPort = int(CONFIG_DICT['FLASK_SER_PORT']) if 'FLASK_SER_PORT' in CONFIG_DICT.keys() else 5000
@@ -98,4 +99,5 @@ gflaskMultiTH =  CONFIG_DICT['FLASK_MULTI_TH']
 
 #-----------------------------------------------------------------------------
 # Init the global instances
-iPlcDataMgr = None 
+iPlcDataMgr = None
+iUserMgr = None

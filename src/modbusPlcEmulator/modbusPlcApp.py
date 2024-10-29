@@ -42,6 +42,9 @@ def createApp():
         return modbusPlcAuth.User(userID)
     return app
 
+# Init the user manager
+gv.iUserMgr = modbusPlcAuth.userMgr(gv.gUsersRcd)
+
 # Init the PLC function thread.
 gv.iPlcDataMgr = modbusPlcDataMgr.DataManager(None)
 gv.iPlcDataMgr.start()
@@ -135,6 +138,66 @@ def addAllowWriteIp():
         else: 
             flash("Input IP format incorrect.")
     return redirect(url_for('configuration'))
+
+# -----------------------------------------------------------------------------
+# page 3 admin user account's request handling function.
+@app.route('/accmgmt')
+@login_required
+def accmgmt():
+    posts = {'page': 3,
+             'users': gv.iUserMgr.getUserInfo()
+            }
+    return render_template('accmgmt.html', posts=posts)
+
+@app.route('/accmgmt/<string:username>/<string:action>', methods=('POST',))
+@login_required
+def changeAcc(username, action):
+    """ Handle the user account's POST request.
+        Args:
+            username (str): user name string
+            action (str): action tag.
+    """
+    if action == 'delete':
+        if gv.iUserMgr.removeUser(str(username).strip()):
+            flash('User [ %s ] has been deleted.' % str(username))
+        else:
+            flash('User not found.')
+    return redirect(url_for('accmgmt'))
+
+@app.route('/addnewuser', methods=['POST', ])
+@login_required
+def addnewuser():
+    """ Addd a new user in the IoT system."""
+    if request.method == 'POST':
+        tgttype = request.form.getlist('optradio')
+        tgtUser = request.form.get("username")
+        tgtPwd = request.form.get("password")
+        # print((tgttype, tgtUser, tgtPwd))
+        if not gv.iUserMgr.userExist(tgtUser):
+            userType = 'admin' if 'option1' in tgttype else 'user'
+            if gv.iUserMgr.addUser(tgtUser, tgtPwd, userType):
+                flash('User [ %s ] has been added.' % str(tgtUser))
+            else:
+                flash('User [ %s ] can not be added.' % str(tgtUser))
+        else:
+            flash('User [ %s ] has been exist.' % str(tgtUser))
+    return redirect(url_for('accmgmt'))
+
+@app.route('/setpassword/<string:username>', methods=['POST', ])
+@login_required
+def setpassword(username):
+    """ Update the user password."""
+    if request.method == 'POST':
+        newPassword = str(request.form.get("newpassword")).strip()
+        if newPassword:
+            rst = gv.iUserMgr.updatePwd(username, newPassword)
+            if rst:
+                flash('Password of user [ %s ] has been changed.' % str(username))
+            else:
+                flash('Password of user [ %s ] can not be changed.' % str(username))
+        else:
+            flash('Password can not be empty.')
+    return redirect(url_for('accmgmt'))
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------

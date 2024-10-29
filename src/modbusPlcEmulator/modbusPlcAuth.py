@@ -15,22 +15,89 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user, UserMixin
 import modbusPlcGlobal as gv
+from ConfigLoader import JsonLoader
 
 auth = Blueprint('auth', __name__)
 
 #-----------------------------------------------------------------------------
 class User(UserMixin):
     """ User object used to get the user info from backend during init.
-    Args:
-        UserMixin (_type_): _description_
+        Args:
+            UserMixin (_type_): _description_
     """
     def __init__(self, id):
         self.id = id
         self.name = id
-        self.authority = 0
+        self.type = 'user'
+        self.password = None
 
     def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.email)
+        return "%d/%s/%s" % (self.name, self.type, self.password)
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+class userMgr(JsonLoader):
+    """ User information manager module to handle add user, delete user, update 
+        user, query user information. It is a child module inherted from  
+        ConfigLoader.JsonLoader
+    """
+    
+    def __init__(self, userRcd):
+        """ userMgr class constructor. Init example mgr = userMgr("user.json")
+            Args:
+                userRcd (str): user record json file path.
+        """
+        super().__init__()
+        self.loadFile(userRcd)
+
+    # -----------------------------------------------------------------------------
+    # user check function.
+    def userExist(self, userID):
+        if not self._haveData(): return False
+        if userID in self.jsonData.keys(): return True
+        return False
+
+    def verifyUser(self, userName, userPwd):
+        if self.userExist(userName):
+            return self.jsonData[str(userName)]['password'] == userPwd
+        return False
+    
+    # -----------------------------------------------------------------------------
+    # Get() function
+    def getUserInfo(self):
+        if self._haveData():
+            return self.getJsonData().values()
+        return []
+
+    # -----------------------------------------------------------------------------
+    # user create, update and delete function.
+    def addUser(self, userName, userPwd, userType, updateRcd=True):
+        userName = str(userName).strip()
+        if not self._haveData(): return False 
+        if self.userExist(userName): return False
+        data = {
+            "username": str(userName),
+            "password": str(userPwd),
+            "usertype": str(userType)
+        }
+        self.jsonData[userName] = data
+        if updateRcd: self.updateRcdFile()
+        return True
+    
+    def updatePwd(self, userName, newPwd, updateRcd=True) :
+        if self.userExist(userName):
+            self.jsonData[userName]['password'] = str(newPwd)
+            if updateRcd: self.updateRcdFile()
+            return True 
+        return False
+
+    def removeUser(self, userName, updateRcd=True):
+        print(userName)
+        if self.userExist(userName):
+            self.jsonData.pop(userName)
+            if updateRcd: self.updateRcdFile()
+            return True            
+        return False
 
 #-----------------------------------------------------------------------------
 @auth.route('/login')
@@ -43,15 +110,25 @@ def login_post():
     password = request.form.get('password')
     remember = True if request.form.get('remember') else False
     print((account, password))
-    if str(account)==gv.gUser:
-        if str(password) == gv.gPassword:
+    if gv.iUserMgr.userExist(account):
+        if gv.iUserMgr.verifyUser(str(account), str(password)):
             login_user(User(account), remember=remember)
             return redirect(url_for('index'))
         else:
-            flash('User password incorrect!')  
+            flash('User password incorrect!')
     else:
-        flash('Login account does not exist')
+        flash('Login user does not exit!')
     return redirect(url_for('index'))
+
+    # if str(account)==gv.gUser:
+    #     if str(password) == gv.gPassword:
+    #         login_user(User(account), remember=remember)
+    #         return redirect(url_for('index'))
+    #     else:
+    #         flash('User password incorrect!')  
+    # else:
+    #     flash('Login account does not exist')
+    # return redirect(url_for('index'))
 
 #-----------------------------------------------------------------------------
 @auth.route('/logout')
