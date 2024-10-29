@@ -94,11 +94,8 @@ class DataManager(threading.Thread):
     def run(self):
         """ Thread run() function call by start(). """
         time.sleep(1)  # sleep 1 second to wait socketIO start to run.
-        while not self.terminate:
-            gv.gDebugPrint('PLC Modbus-TCP server started', logType=gv.LOG_INFO)
-            self.server.startServer()
-            time.sleep(gv.UPDATE_PERIODIC)
-
+        gv.gDebugPrint('PLC Modbus-TCP server started', logType=gv.LOG_INFO)
+        self.server.startServer()
         gv.gDebugPrint('PLC Modbus-TCP server terminated', logType=gv.LOG_INFO)
 
     #-----------------------------------------------------------------------------

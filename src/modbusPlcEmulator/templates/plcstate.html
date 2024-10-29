@@ -1,0 +1,60 @@
+{% extends 'mgmbase.html' %}
+
+{% block title %} Logic Controller - Modicon M221 {% endblock %}
+
+{% block style%} <style></style> {% endblock %}
+
+{% block mgmContent %}
+
+<ul class="list-group">
+
+    <li class="list-group-item">
+        <h3> <b class="text-success"> PLC State </b></h3>
+    </li>
+    <br>
+    <div class="row">
+        <div class="col-sm-3">
+
+            <li class="list-group-item">   
+                <b class="text-success">PLC Input Group</b> 
+                <br>
+                <table class="table table-bordered table-sm">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Contact</th>
+                        <th>Voltage</th>
+                        <th>Register</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>%I0.0</td>
+                        <td><span class="badge bg-success">5v</span></td>
+                        <td>%HR0.0</td>
+                        <td><span class="badge bg-dark"> 1 </span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </li>
+        </div>
+
+        <div class="col-sm-6">
+
+            <li class="list-group-item">   
+                <b class="text-success">PLC Ladder Diagram</b> 
+            </li>
+
+        </div>
+
+        <div class="col-sm-3">
+
+            <li class="list-group-item">   
+                <b class="text-success">PLC Output group</b> 
+            </li>
+
+        </div>
+    </div>
+</ul>
+
+{% endblock %}

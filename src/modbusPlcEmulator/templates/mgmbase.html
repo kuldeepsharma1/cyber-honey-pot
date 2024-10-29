@@ -18,8 +18,8 @@
             {% if current_user.is_authenticated %}
              
                 <div class="list-group">
-                    <a href="{{ url_for('ladderlogic')}}" class="list-group-item list-group-item-action {% if posts['page'] == 1 %} bg-success {% endif %}"> 
-                        <b class="{% if posts['page'] == 1 %} text-white {% endif %} "> PLC Ladder Logic </b>
+                    <a href="{{ url_for('plcstate')}}" class="list-group-item list-group-item-action {% if posts['page'] == 1 %} bg-success {% endif %}"> 
+                        <b class="{% if posts['page'] == 1 %} text-white {% endif %} "> PLC State </b>
                     </a>
                 </div>
 

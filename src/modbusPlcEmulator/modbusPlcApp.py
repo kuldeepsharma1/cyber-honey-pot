@@ -2,9 +2,9 @@
 #-----------------------------------------------------------------------------
 # Name:        modbusPlcApp.py [python3]
 #
-# Purpose:     This module is the main execution file of the modbus-TCP PLC emulator
-#              of the honeypot project. It provide the modbus-TCP interface for 
-#              handling the OT control requesnt and a web interface for PLC 
+# Purpose:     This module is the main App execution file of the modbus-TCP PLC 
+#              emulator of the honeypot project. It provide the modbus-TCP interface 
+#              for handling the OT control request and a web interface for PLC 
 #              configuration change.
 #
 # Author:      Yuancheng Liu
@@ -60,15 +60,15 @@ def index():
     return render_template('index.html', posts=posts)
     
 #-----------------------------------------------------------------------------
-@app.route('/ladderlogic')
+@app.route('/plcstate')
 @login_required
-def ladderlogic():
+def plcstate():
     """ route to the ladder logic page."""
     posts = {
                 'page': 1,
                 'flag': str(gv.gFlagStr)
             }
-    return render_template('ladderlogic.html', posts=posts)
+    return render_template('plcstate.html', posts=posts)
 
 #-----------------------------------------------------------------------------
 @app.route('/configuration')
