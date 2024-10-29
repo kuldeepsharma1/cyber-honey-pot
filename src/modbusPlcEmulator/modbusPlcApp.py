@@ -66,9 +66,7 @@ def index():
 @login_required
 def plcstate():
     """ route to the ladder logic page."""
-    posts = {'page': 1, 
-             'ladderdiagram': gv.gladderPic
-             }
+    posts = {'page': 1}
     stateData = gv.iPlcDataMgr.getPlcStateDict()
     posts.update(stateData)
     return render_template('plcstate.html', posts=posts)

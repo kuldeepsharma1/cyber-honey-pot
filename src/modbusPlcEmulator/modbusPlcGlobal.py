@@ -8,8 +8,8 @@
 # Author:      Yuancheng Liu
 #
 # Created:     2024/10/21
-# Version:     v_0.0.3
-# Copyright:   Copyright (c) 2023 LiuYuancheng
+# Version:     v_0.1.3
+# Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License
 #-----------------------------------------------------------------------------
 """
@@ -26,7 +26,7 @@ import json
 print("Current working directory is : %s" % os.getcwd())
 DIR_PATH = dirpath = os.path.dirname(os.path.abspath(__file__))
 print("Current source code location : %s" % dirpath)
-APP_NAME = ('modbusPlc', 'Server')
+APP_NAME = ('modbusPlc', 'emulator')
 
 TOPDIR = 'src'
 LIBDIR = 'lib'
@@ -83,13 +83,9 @@ ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
 # Init the global value
 gPlcHostIp = '0.0.0.0'
 gHostPort = 502
-# PLC admin user credential:
-gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])
 
-#gUser = CONFIG_DICT['USER']
-#gPassword = CONFIG_DICT['PASSWORD']
-# PLC IT flag
-gladderPic = 'ladderlogic'
+# PLC user credential:
+gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])
 
 # Flask App parameters : 
 gflaskHost = '0.0.0.0'

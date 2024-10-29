@@ -15,7 +15,6 @@
 # License:     MIT License    
 #-----------------------------------------------------------------------------
 
-import time
 import random
 import threading
 
@@ -100,7 +99,6 @@ class DataManager(threading.Thread):
     #-----------------------------------------------------------------------------
     def run(self):
         """ Thread run() function call by start(). """
-        time.sleep(1)  # sleep 1 second to wait socketIO start to run.
         gv.gDebugPrint('PLC Modbus-TCP server started', logType=gv.LOG_INFO)
         self.server.startServer()
         gv.gDebugPrint('PLC Modbus-TCP server terminated', logType=gv.LOG_INFO)

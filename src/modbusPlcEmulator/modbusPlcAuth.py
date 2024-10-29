@@ -1,8 +1,8 @@
 #-----------------------------------------------------------------------------
-# Name:        plcServerAuth.py
+# Name:        modbusPlcAuth.py
 #
-# Purpose:     User autherization module used for check user login, signup and 
-#              logout.
+# Purpose:     PLC emulator's user autherization module used for check user login, 
+#              signup and logout.
 #              
 # Author:      Yuancheng Liu
 #
@@ -14,6 +14,7 @@
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user, UserMixin
+
 import modbusPlcGlobal as gv
 from ConfigLoader import JsonLoader
 
@@ -119,16 +120,6 @@ def login_post():
     else:
         flash('Login user does not exit!')
     return redirect(url_for('index'))
-
-    # if str(account)==gv.gUser:
-    #     if str(password) == gv.gPassword:
-    #         login_user(User(account), remember=remember)
-    #         return redirect(url_for('index'))
-    #     else:
-    #         flash('User password incorrect!')  
-    # else:
-    #     flash('Login account does not exist')
-    # return redirect(url_for('index'))
 
 #-----------------------------------------------------------------------------
 @auth.route('/logout')
