@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Name:        modbusPlcGlobal.py
+# Name:        mbPlcControllerGlobal.py
 #
 # Purpose:     This module is used as a project global config file to set the 
 #              constants, parameters and instances which will be used in the 
@@ -7,7 +7,7 @@
 #              
 # Author:      Yuancheng Liu
 #
-# Created:     2024/10/21
+# Created:     2024/05/26
 # Version:     v_0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License
@@ -26,7 +26,7 @@ import json
 print("Current working directory is : %s" % os.getcwd())
 DIR_PATH = dirpath = os.path.dirname(os.path.abspath(__file__))
 print("Current source code location : %s" % dirpath)
-APP_NAME = ('modbusPlc', 'emulator')
+APP_NAME = ('modbusPlc', 'Controller')
 
 TOPDIR = 'src'
 LIBDIR = 'lib'
@@ -72,29 +72,13 @@ def gDebugPrint(msg, prt=True, logType=None):
     elif logType == LOG_INFO or DEBUG_FLG:
         Log.info(msg)
 
-APP_SEC_KEY = 'secrete-key-goes-here'
-UPDATE_PERIODIC = 15
-COOKIE_TIME = 30
-
-ALLOW_R_L = json.loads(CONFIG_DICT['ALLOW_R_L'])
-ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
-
 #-----------------------------------------------------------------------------
 # Init the global value
-gPlcHostIp = '0.0.0.0'
-gHostPort = 502
-
-# PLC user credential:
-gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])
-
-# Flask App parameters : 
-gflaskHost = '0.0.0.0'
-gflaskPort = int(CONFIG_DICT['FLASK_SER_PORT']) if 'FLASK_SER_PORT' in CONFIG_DICT.keys() else 5000
-gflaskDebug = CONFIG_DICT['FLASK_DEBUG_MD']
-gflaskMultiTH =  CONFIG_DICT['FLASK_MULTI_TH']
-
-#-----------------------------------------------------------------------------
-# Init the global instances
-iPlcLadderLogic = None
-iPlcDataMgr = None
-iUserMgr = None
+# plc connection 
+gPlcIP = CONFIG_DICT['PLC_IP']
+gPlcPort = int(CONFIG_DICT['PLC_PORT'])
+gPlcConnInt = int(CONFIG_DICT['PLC_CINT'])
+# udp service 
+gUDPPort = int(CONFIG_DICT['UDP_PORT'])
+# OT challenge flag
+gFlgStr = CONFIG_DICT['ERR_CODE']
