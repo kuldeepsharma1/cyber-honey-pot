@@ -1,4 +1,8 @@
-# Py_PLC_Honey_Pot [under development]
+# Python  PLC Honey Pot Project [under development]
+
+![](doc/img/logo.png)
+
+
 
 We want to create a python PLC honey pot system with below features:
 
