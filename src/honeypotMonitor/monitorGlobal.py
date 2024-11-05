@@ -76,16 +76,8 @@ APP_SEC_KEY = 'secrete-key-goes-here'
 UPDATE_PERIODIC = 15
 COOKIE_TIME = 30
 
-ALLOW_R_L = json.loads(CONFIG_DICT['ALLOW_R_L'])
-ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
+gTimeOut = 30
 
-#-----------------------------------------------------------------------------
-# Init the global value
-gPlcHostIp = '0.0.0.0'
-gHostPort = 502
-
-# PLC user credential:
-gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])
 
 # Flask App parameters : 
 gflaskHost = '0.0.0.0'
@@ -96,5 +88,5 @@ gflaskMultiTH =  CONFIG_DICT['FLASK_MULTI_TH']
 #-----------------------------------------------------------------------------
 # Init the global instances
 iPlcLadderLogic = None
-iPlcDataMgr = None
+iDataMgr = None
 iUserMgr = None

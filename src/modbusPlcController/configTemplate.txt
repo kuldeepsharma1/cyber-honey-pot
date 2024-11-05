@@ -1,0 +1,18 @@
+# This is the config file template for the module <plcClientApp.py>
+# Setup the parameter with below format (every line follows <key>:<val> format, the
+# key can not be changed):
+
+#-----------------------------------------------------------------------------
+# Define the PLC admin login acccount and password
+PLC_IP:172.23.155.209
+PLC_PORT:502
+# PLC data fetch time interval (sec)
+PLC_CINT:6
+
+#-----------------------------------------------------------------------------
+# The UDP port opened for the CTF participants to send the message
+UDP_PORT:3000
+
+#-----------------------------------------------------------------------------
+# The error code the the flag, please setup your flag here as string:
+ERR_CODE:PLC_EXECUTE_ERROR_FLG

@@ -81,4 +81,4 @@ gPlcConnInt = int(CONFIG_DICT['PLC_CINT'])
 # udp service 
 gUDPPort = int(CONFIG_DICT['UDP_PORT'])
 # OT challenge flag
-gFlgStr = CONFIG_DICT['ERR_CODE']
+#gFlgStr = CONFIG_DICT['ERR_CODE']

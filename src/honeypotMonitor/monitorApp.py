@@ -16,11 +16,10 @@
 #-----------------------------------------------------------------------------
 
 from datetime import timedelta 
-from flask import Flask, render_template, flash, redirect, url_for, request
-from flask_login import LoginManager, login_required
+from flask import Flask, render_template, flash, redirect, url_for, jsonify, request
 
 import monitorGlobal as gv
-
+import monitorDataMgr as dataMgr
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -32,6 +31,7 @@ def createApp():
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(seconds=gv.COOKIE_TIME)
     return app
 
+gv.iDataMgr = dataMgr.DataManger()
 app = createApp()
 
 #-----------------------------------------------------------------------------
@@ -51,13 +51,26 @@ def controllerview():
     posts = {'page': 1}
     return render_template('controllerview.html', posts=posts)
 
-
 #-----------------------------------------------------------------------------
 @app.route('/plcemuview')
 def plcemuview():
     """ route to the ladder logic page."""
     posts = {'page': 2}
     return render_template('plcemuview.html', posts=posts)
+
+#-----------------------------------------------------------------------------
+@app.route('/dataPost/<string:devID>', methods=('POST',))
+def dataPost(devID):
+    """ Handle program data submittion request.
+        API call example:
+        requests.post(http://%s:%s/dataPost/<devID>, json={})
+    """
+    content = request.json
+    gv.gDebugPrint("Get raw data from %s " %str(devID), logType=gv.LOG_INFO)
+    gv.gDebugPrint("Raw Data: %s" % str(content),prt=True, logType=gv.LOG_INFO)
+    result = gv.iDataMgr.handleRequest(content) if gv.iDataMgr else {"ok": True}
+    return jsonify(result)
+
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
