@@ -45,6 +45,21 @@ def index():
     return render_template('index.html', posts=posts)
 
 #-----------------------------------------------------------------------------
+@app.route('/controllerview')
+def controllerview():
+    """ route to the ladder logic page."""
+    posts = {'page': 1}
+    return render_template('controllerview.html', posts=posts)
+
+
+#-----------------------------------------------------------------------------
+@app.route('/plcemuview')
+def plcemuview():
+    """ route to the ladder logic page."""
+    posts = {'page': 2}
+    return render_template('plcemuview.html', posts=posts)
+
+#-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
     #app.run(host="0.0.0.0", port=5000,  debug=False, threaded=True)
