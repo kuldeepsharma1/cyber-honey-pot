@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Name:        plcClientApp.py
+# Name:        mbPlcControllerApp.py
 #
 # Purpose:     This modulde is the controller program start a Modbus-TCP PLC 
 #              client to connect to the PLC to set the holding register and 
@@ -8,9 +8,9 @@
 #              
 # Author:      Yuancheng Liu
 #
-# Created:     2024/05/28
+# Created:     2024/10/28
 # Version:     v_0.1.3
-# Copyright:   Copyright (c) 2023 LiuYuancheng
+# Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License      
 #-----------------------------------------------------------------------------
 

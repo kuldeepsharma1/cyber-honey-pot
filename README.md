@@ -1,6 +1,25 @@
-# Python  PLC Honey Pot Project [under development]
+# Python PLC Honey Pot Project [under development]
 
 ![](doc/img/logo.png)
+
+**Program Design Propose** : we want to create a Python programmed PLC honey pot project to simulate the SCADA(Supervisory Control and Data Acquisition) network of a OT environment between the lvl1 OT field device PLC and the related controller program such as HMI. It can simulate multiple PLC models from different vendors (such as Schneider and Siemens) with two main PLC communication protocol: Modbus-TCP and Siemens-S7Comm. The system will provide PLC emulator, OT controller simulator, ladder logic verifier, Data Logger and System Monitor. As a honey pot, it will provide the function to detect un-authorized attack access for PLC (such as http/https PLC config page login), FCI and FDI attack detection and log all the sub system execution state in real time for user to detect and monitor the attacker/red team's action. 
+
+```
+# Created:     2024/10/28
+# Version:     v_0.0.1
+# Copyright:   Copyright (c) 2024 LiuYuancheng
+# License:     MIT License      
+```
+
+**Table of Contents**
+
+[TOC]
+
+
+
+
+
+
 
 
 
