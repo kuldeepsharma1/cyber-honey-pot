@@ -84,6 +84,17 @@ ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
 gPlcHostIp = '0.0.0.0'
 gHostPort = 502
 
+# Own Information
+gOwnID = CONFIG_DICT['Own_ID']
+gOwnIP = CONFIG_DICT['Own_IP']
+gOwnType = CONFIG_DICT['PRO_TYPE']
+
+gMonHubIp = CONFIG_DICT['MON_IP']
+gMonHubPort = int(CONFIG_DICT['MON_PORT'])
+gReportInv = int(CONFIG_DICT['RPT_INTERVAL'])
+
+gLadderID = CONFIG_DICT['LADDER_ID']
+
 # PLC user credential:
 gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])
 

@@ -71,7 +71,6 @@ def dataPost(devID):
     result = gv.iDataMgr.handleRequest(content) if gv.iDataMgr else {"ok": True}
     return jsonify(result)
 
-
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':

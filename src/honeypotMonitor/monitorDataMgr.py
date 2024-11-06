@@ -43,7 +43,6 @@ class agentDev(object):
     def setProtocol(self, newProtocol):
         self.protocol = newProtocol
 
-
     def addOneReport(self, reportDict):
         self.lastUpdateTime = time.time()
         self.totalRptCount += 1
