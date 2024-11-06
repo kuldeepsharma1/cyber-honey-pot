@@ -79,7 +79,6 @@ class agentDev(object):
         return self.exceptList
 
 
-
 class agentPLC(agentDev):
     """ Agent PLC class for the monitor hub. """   
 
@@ -123,7 +122,12 @@ class DataManger(object):
         self.controllerDict = {}
     
     def handleRequest(self, requestDict):
-        pass
+        reqDict = dict(requestDict)
+        action = str(reqDict['Action']).lower()
+        data = reqDict['Data']
+        if action == 'login':
+            if str(data['Type']).lower() == 'plc':
+                self.addPlc(data['ID'], data['IP'], data['Protocol'], ladderInfo=data['LadderID'])
         return {"ok": True}
 
     def addPlc(self, plcID, plcIP, protocol, ladderInfo=None):

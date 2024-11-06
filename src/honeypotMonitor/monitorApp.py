@@ -55,7 +55,10 @@ def controllerview():
 @app.route('/plcemuview')
 def plcemuview():
     """ route to the ladder logic page."""
-    posts = {'page': 2}
+    infoList = gv.iDataMgr.getAllPlcState()
+    posts = {'page': 2,
+             'plcinfo': infoList
+             }
     return render_template('plcemuview.html', posts=posts)
 
 #-----------------------------------------------------------------------------

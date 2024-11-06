@@ -37,16 +37,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for plcinfo in posts['plcinfo'] %}
                         <tr>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
+                            <td> {{plcinfo['id']}}</td>
+                            <td> {{plcinfo['ip']}}</td>
+                            <td> {{plcinfo['protocol']}}</td>
+                            <td> {{plcinfo['ladderInfo']}}</td>
+                            <td> {{plcinfo['lastUpdateT']}}</td>
+                            <td> {{plcinfo['reportT']}}</td>
+                            <td> {{plcinfo['exceptCount']}}</td>
+                            <td> {{plcinfo['totalRptCount']}}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </li>
