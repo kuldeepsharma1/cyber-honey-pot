@@ -87,7 +87,7 @@ gHostPort = 502
 # Own Information
 gOwnID = CONFIG_DICT['Own_ID']
 gOwnIP = CONFIG_DICT['Own_IP']
-gOwnType = CONFIG_DICT['PRO_TYPE']
+gProType = CONFIG_DICT['PRO_TYPE']
 
 gMonHubIp = CONFIG_DICT['MON_IP']
 gMonHubPort = int(CONFIG_DICT['MON_PORT'])
@@ -109,3 +109,4 @@ gflaskMultiTH =  CONFIG_DICT['FLASK_MULTI_TH']
 iPlcLadderLogic = None
 iPlcDataMgr = None
 iUserMgr = None
+iMonitorClient = None

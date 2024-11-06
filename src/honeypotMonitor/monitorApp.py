@@ -59,14 +59,14 @@ def plcemuview():
     return render_template('plcemuview.html', posts=posts)
 
 #-----------------------------------------------------------------------------
-@app.route('/dataPost/<string:devID>', methods=('POST',))
-def dataPost(devID):
+@app.route('/dataPost', methods=('POST',))
+def dataPost():
     """ Handle program data submittion request.
         API call example:
         requests.post(http://%s:%s/dataPost/<devID>, json={})
     """
     content = request.json
-    gv.gDebugPrint("Get raw data from %s " %str(devID), logType=gv.LOG_INFO)
+    #gv.gDebugPrint("Get raw data from %s " %str(devID), logType=gv.LOG_INFO)
     gv.gDebugPrint("Raw Data: %s" % str(content),prt=True, logType=gv.LOG_INFO)
     result = gv.iDataMgr.handleRequest(content) if gv.iDataMgr else {"ok": True}
     return jsonify(result)

@@ -16,7 +16,14 @@ import time
 import copy
 import requests
 import threading
+from datetime import datetime
+from queue import Queue
 
+# Define the constents: 
+MAX_RTP_NUM = 10    # defualt report C2 server time interval(sec)
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class monitorClient(threading.Thread):
 
     def __init__(self, monIP, monPort, reportInterval=5):
@@ -31,11 +38,26 @@ class monitorClient(threading.Thread):
         self.monPort = monPort
         self.reportInterval = reportInterval
         self.reportLock = threading.Lock()
-        self._postUrl = "https://%s:%s/dataPost/" % (self.monIP, str(self.monPort))
+        self._postUrl = "http://%s:%s/dataPost" % (self.monIP, str(self.monPort))
         self.parentInfoDict = None
         self.monConnected = False
         self.terminate = False 
-    
+        self.reportQueue = Queue(maxsize=MAX_RTP_NUM)
+
+    #-----------------------------------------------------------------------------
+    def addReportDict(self, actionType, reportMsg):
+        """ Add the report message to the queue.
+            Args:
+                msgDict (dict): report message dict.
+        """
+        if self.reportQueue.full(): self.reportQueue.get()
+        data = {
+            'type': actionType,
+            'Times': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'message': reportMsg
+        }
+        self.reportQueue.put((actionType, reportMsg))
+
     #-----------------------------------------------------------------------------
     def setParentInfo(self, parID, parIP, parType, parPro, tgtID=None, tgtIP=None, ladderID=None):
         """ Set the parent info.
@@ -57,12 +79,14 @@ class monitorClient(threading.Thread):
         if tgtID is not None: self.parentInfoDict["TargetID"] = tgtID
         if tgtIP is not None: self.parentInfoDict["TargetIP"] = tgtIP
 
-    def logtoMonitor(self, logMsg):
+    def logintoMonitor(self):
         """ Report the log message to monitor hub.
             Args:
                 logMsg (str): log message.
         """
-        self.report2Monitor("Log", {"Msg": logMsg})
+        data = copy.deepcopy(self.parentInfoDict)
+        action = 'login'
+        self.report2Monitor(action, data)
 
     #-----------------------------------------------------------------------------
     def report2Monitor(self, action, data):
@@ -71,10 +95,12 @@ class monitorClient(threading.Thread):
                 action (str): action name.
                 data (dict): data to report.
         """
-        if self.parentInfoDict is None: return
-        dataDict = copy.deepcopy(self.parentInfoDict)
-        dataDict["Action"] = action
-        dataDict["Data"] = data
+        dataDict = {
+            'ID': self.parentInfoDict['ID'],
+            'Action': action,
+            'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'Data': data
+        }
         self._postData(self._postUrl, dataDict)
 
     #-----------------------------------------------------------------------------
@@ -94,6 +120,7 @@ class monitorClient(threading.Thread):
             if res.ok:
                 print("http server reply: %s" % str(res.json()))
                 self.reportLock.release()
+                self.monConnected = True
                 return res.json()
         except Exception as err:
             print("Error: _postData() > http server not reachable or POST error: %s" % str(err))
@@ -106,11 +133,11 @@ class monitorClient(threading.Thread):
         """ Main state report and task fetch loop called by start(). """
         print("Start the C2 client main loop.")
         while not self.terminate:
-            # report the state to C2 1st if there is state in queue.
-            if self.submitAllStateToC2():
-                print("Reported the current state to C2.")
+            if self.monConnected:
+                if not self.reportQueue.empty():
+                    data = self.reportQueue.get()
+                    self.report2Monitor('report', data)
             else:
-                print("Try to get task from C2 Server.")
-                self.fetchTaskFromC2()
+                self.logintoMonitor()
             time.sleep(self.reportInterval)
         print("C2 client main loop end.")

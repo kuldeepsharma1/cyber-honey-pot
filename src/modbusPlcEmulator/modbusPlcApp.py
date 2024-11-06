@@ -22,6 +22,7 @@ from flask_login import LoginManager, login_required
 import modbusPlcGlobal as gv
 import modbusPlcAuth
 import modbusPlcDataMgr
+import monitorClient
 
 #-----------------------------------------------------------------------------
 # Init the flask web app program.
@@ -48,6 +49,15 @@ gv.iUserMgr = modbusPlcAuth.userMgr(gv.gUsersRcd)
 # Init the PLC function thread.
 gv.iPlcDataMgr = modbusPlcDataMgr.DataManager(None)
 gv.iPlcDataMgr.start()
+
+gv.iMonitorClient = monitorClient.monitorClient( gv.gMonHubIp, gv.gMonHubPort, 
+                                                reportInterval=gv.gReportInv)
+
+gv.iMonitorClient.setParentInfo(gv.gOwnID, gv.gOwnIP, 'plc', gv.gProType, 
+                                ladderID=gv.gLadderID)
+gv.iMonitorClient.logintoMonitor()
+gv.iMonitorClient.start()
+
 # Init the Web UI thread.
 app = createApp()
 

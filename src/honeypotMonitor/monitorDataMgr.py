@@ -122,6 +122,10 @@ class DataManger(object):
         self.plcDict = {}
         self.controllerDict = {}
     
+    def handleRequest(self, requestDict):
+        pass
+        return {"ok": True}
+
     def addPlc(self, plcID, plcIP, protocol, ladderInfo=None):
         if plcID not in self.plcDict.keys():
             self.plcDict[plcID] = agentPLC(plcID, plcIP, protocol, ladderInfo=ladderInfo)
