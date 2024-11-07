@@ -78,7 +78,8 @@ class agentDev(object):
     def getExecptList(self):
         return self.exceptList
 
-
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class agentPLC(agentDev):
     """ Agent PLC class for the monitor hub. """   
 
@@ -94,6 +95,8 @@ class agentPLC(agentDev):
         dataDict['ladderInfo'] = self.ladderInfo
         return dataDict
 
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class agentController(agentDev):
 
     """ Agent controller class for the monitor hub. """
@@ -113,7 +116,8 @@ class agentController(agentDev):
         dataDict['tgtPlcIP'] = self.tgtPlcIP
         return dataDict
 
-
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class DataManger(object):
 
     """ Data manager class for the monitor hub. """
@@ -128,6 +132,8 @@ class DataManger(object):
         if action == 'login':
             if str(data['Type']).lower() == 'plc':
                 self.addPlc(data['ID'], data['IP'], data['Protocol'], ladderInfo=data['LadderID'])
+            elif str(data['Type']).lower() == 'controller':
+                self.addController(data['ID'], data['IP'], data['Protocol'], data['TgtPlcID'], data['TgtPlcIP'])
         return {"ok": True}
 
     def addPlc(self, plcID, plcIP, protocol, ladderInfo=None):

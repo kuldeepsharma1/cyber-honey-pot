@@ -1,8 +1,9 @@
 #!/usr/bin/python
 #-----------------------------------------------------------------------------
-# Name:        monitorClient.py [python3]
+# Name:        monitorClient.py
 #
-# Purpose:     Client to report PLC state to the monitor hub. 
+# Purpose:     The client module to report honeypot PLC emulator state to the 
+#              monitor hub. 
 #  
 # Author:      Yuancheng Liu
 #
@@ -19,8 +20,7 @@ import threading
 from datetime import datetime
 from queue import Queue
 
-# Define the constents: 
-MAX_RTP_NUM = 10    # defualt report C2 server time interval(sec)
+MAX_RTP_NUM = 10    # Default report C2 server time interval(sec)
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ class monitorClient(threading.Thread):
             Args:
                 monIP (str): monitor hub IP address.
                 monPort (int): monitor hub port.
-                reportInterval (int, optional): report interval in seconds. Defaults to 60.
+                reportInterval (int, optional): report interval in seconds. Defaults to 5 sec.
         """
         threading.Thread.__init__(self)
         self.monIP = monIP
@@ -43,6 +43,7 @@ class monitorClient(threading.Thread):
         self.monConnected = False
         self.terminate = False 
         self.reportQueue = Queue(maxsize=MAX_RTP_NUM)
+        
 
     #-----------------------------------------------------------------------------
     def addReportDict(self, actionType, reportMsg):
@@ -56,7 +57,7 @@ class monitorClient(threading.Thread):
             'Times': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'message': reportMsg
         }
-        self.reportQueue.put((actionType, reportMsg))
+        self.reportQueue.put((actionType, data))
 
     #-----------------------------------------------------------------------------
     def setParentInfo(self, parID, parIP, parType, parPro, tgtID=None, tgtIP=None, ladderID=None):
@@ -68,6 +69,7 @@ class monitorClient(threading.Thread):
                 parPro (str): parent protocol.
                 tgtID (str, optional): target ID. Defaults to None.
                 tgtIP (str, optional): target IP address. Defaults to None.
+                ladderID (str, optional): ladder logic ID. Defaults to None.
         """
         self.parentInfoDict = {
             "ID": parID, 
@@ -79,11 +81,9 @@ class monitorClient(threading.Thread):
         if tgtID is not None: self.parentInfoDict["TargetID"] = tgtID
         if tgtIP is not None: self.parentInfoDict["TargetIP"] = tgtIP
 
+    #-----------------------------------------------------------------------------
     def logintoMonitor(self):
-        """ Report the log message to monitor hub.
-            Args:
-                logMsg (str): log message.
-        """
+        """ Login to the monitor hub when the program start."""
         data = copy.deepcopy(self.parentInfoDict)
         action = 'login'
         self.report2Monitor(action, data)
@@ -131,13 +131,13 @@ class monitorClient(threading.Thread):
     #-----------------------------------------------------------------------------
     def run(self):
         """ Main state report and task fetch loop called by start(). """
-        print("Start the C2 client main loop.")
+        print("Start the monitor report client main loop.")
         while not self.terminate:
             if self.monConnected:
                 if not self.reportQueue.empty():
-                    data = self.reportQueue.get()
-                    self.report2Monitor('report', data)
+                    actionType, data = self.reportQueue.get()
+                    self.report2Monitor(actionType, data)
             else:
                 self.logintoMonitor()
             time.sleep(self.reportInterval)
-        print("C2 client main loop end.")
+        print("Monitor report client main loop end.")

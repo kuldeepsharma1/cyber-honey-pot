@@ -8,7 +8,7 @@
 # Author:      Yuancheng Liu
 #
 # Created:     2024/10/21
-# Version:     v_0.1.3
+# Version:     v_0.1.1
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License
 #-----------------------------------------------------------------------------
@@ -53,7 +53,8 @@ CONFIG_DICT = iConfigLoader.getJson()
 #-----------------------------------------------------------------------------
 # Init the logger
 import Log
-Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], historyCnt=100, fPutLogsUnderDate=True)
+Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], 
+               historyCnt=100, fPutLogsUnderDate=True)
 # Init the log type parameters.
 DEBUG_FLG   = False
 LOG_INFO    = 0
@@ -79,21 +80,27 @@ COOKIE_TIME = 30
 ALLOW_R_L = json.loads(CONFIG_DICT['ALLOW_R_L'])
 ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
 
+RPT_NORMAL = 'normal'
+RPT_WARN = 'warning'
+RPT_ALERT = 'alert'
+
 #-----------------------------------------------------------------------------
 # Init the global value
+
+# Modbus server config 
 gPlcHostIp = '0.0.0.0'
 gHostPort = 502
+gLadderID = CONFIG_DICT['LADDER_ID']
 
 # Own Information
 gOwnID = CONFIG_DICT['Own_ID']
 gOwnIP = CONFIG_DICT['Own_IP']
 gProType = CONFIG_DICT['PRO_TYPE']
 
+# Honeypot monitor server config
 gMonHubIp = CONFIG_DICT['MON_IP']
 gMonHubPort = int(CONFIG_DICT['MON_PORT'])
 gReportInv = int(CONFIG_DICT['RPT_INTERVAL'])
-
-gLadderID = CONFIG_DICT['LADDER_ID']
 
 # PLC user credential:
 gUsersRcd = os.path.join(dirpath, CONFIG_DICT['USERS_RCD'])

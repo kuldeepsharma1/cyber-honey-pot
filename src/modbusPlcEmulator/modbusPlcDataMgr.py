@@ -1,16 +1,17 @@
 #!/usr/bin/python
 #-----------------------------------------------------------------------------
-# Name:        plcDataMgr.py [python3]
+# Name:        modbusPlcDataMgr.py 
 #
 # Purpose:     This module is the data management module to init the Modbus-TCP 
 #              server, Plc internal registers, coils and the PLC ladder logic diagram.
-#              Then read registers state (input), calculate the ladder logic and 
-#              set the plc coils(output).
+#              It will handle the Modbus request from the honeypot PLC controller, 
+#              read registers state (input), then calculate the ladder logic and 
+#              set the plc coils(output) in its every clock cycle.
 #  
 # Author:      Yuancheng Liu
 #
-# Created:     2024/06/02
-# version:     v0.1.3
+# Created:     2024/11/02
+# version:     v0.1.1
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
@@ -26,61 +27,65 @@ from mbLadderLogic import ladderLogic
 #-----------------------------------------------------------------------------
 class DataManager(threading.Thread):
     """ Management module running parallel with the main thread to handle all the 
-        PLC functions.
+        PLC request and control functions.
     """
     def __init__(self, parent) -> None:
         threading.Thread.__init__(self)
         # Init the ladder logic 
-        self.ladder = ladderLogic(None)
+        self.ladder = ladderLogic(None, id=gv.gLadderID)
         # Init the plc data handler and permission config
-        self.dataMgr = modbusTcpCom.plcDataHandler(allowRipList=list(gv.ALLOW_R_L).copy(), 
+        self.plcDataMgr = modbusTcpCom.plcDataHandler(allowRipList=list(gv.ALLOW_R_L).copy(), 
                                               allowWipList=list(gv.ALLOW_W_L).copy())
         # Init the modbus server
         self.server = modbusTcpCom.modbusTcpServer(hostIp=gv.gPlcHostIp, 
                                                  hostPort=gv.gHostPort, 
-                                                 dataHandler=self.dataMgr)
+                                                 dataHandler=self.plcDataMgr)
         serverInfo = self.server.getServerInfo()
-        self.dataMgr.initServerInfo(serverInfo)
-        self.dataMgr.addLadderLogic('testLogic', self.ladder)
-        self.dataMgr.setAutoUpdate(True)
+        self.plcDataMgr.initServerInfo(serverInfo)
+        self.plcDataMgr.addLadderLogic(gv.gLadderID, self.ladder)
+        self.plcDataMgr.setAutoUpdate(True)
         self.terminate = False
-        gv.gDebugPrint("PLC data manager init", logType=gv.LOG_INFO)
+        gv.gDebugPrint("PLC data manager init finished.", logType=gv.LOG_INFO)
 
     #-----------------------------------------------------------------------------
     def addAllowReadIp(self, ipaddress):
-        return self.dataMgr.addAllowReadIp(str(ipaddress))
+        return self.plcDataMgr.addAllowReadIp(str(ipaddress))
 
     def addAllowWriteIp(self, ipaddress):
-        return self.dataMgr.addAllowWriteIp(str(ipaddress))
+        return self.plcDataMgr.addAllowWriteIp(str(ipaddress))
 
     #-----------------------------------------------------------------------------
     def getAllowRipList(self):
-        return self.dataMgr.getAllowReadIpaddresses()
+        return self.plcDataMgr.getAllowReadIpaddresses()
 
     def getAllowWipList(self):
-        return self.dataMgr.getAllowWriteIpaddresses()
+        return self.plcDataMgr.getAllowWriteIpaddresses()
 
     def getAllRegistersVal(self):
-        return self.dataMgr.getHoldingRegState(0, 8)
+        return self.plcDataMgr.getHoldingRegState(0, 8)
 
     def getAllCoilsVal(self):
-        return self.dataMgr.getCoilState(0, 8)
+        return self.plcDataMgr.getCoilState(0, 8)
 
     #-----------------------------------------------------------------------------
     def run(self):
         """ Thread run() function call by start(). """
-        gv.gDebugPrint('PLC Modbus-TCP server started', logType=gv.LOG_INFO)
+        gv.gDebugPrint('PLC Modbus-TCP server started.', logType=gv.LOG_INFO)
         self.server.startServer()
-        gv.gDebugPrint('PLC Modbus-TCP server terminated', logType=gv.LOG_INFO)
+        gv.gDebugPrint('PLC Modbus-TCP server terminated.', logType=gv.LOG_INFO)
 
     #-----------------------------------------------------------------------------
     def resetAllowRipList(self):
-        return self.dataMgr.setAllowReadIpaddresses(list(gv.ALLOW_R_L).copy())
+        return self.plcDataMgr.setAllowReadIpaddresses(list(gv.ALLOW_R_L).copy())
 
     def resetAllowWipList(self):
-        return self.dataMgr.setAllowWriteIpaddresses(list(gv.ALLOW_W_L).copy())
+        return self.plcDataMgr.setAllowWriteIpaddresses(list(gv.ALLOW_W_L).copy())
 
+    #-----------------------------------------------------------------------------
     def getPlcStateDict(self):
+        """ Return the PLC current input voltage, register value, coil value and 
+            output voltage as a dictionary.
+        """
         stateDict = {
             'inputVol':[],
             'registerVal':[],
@@ -91,11 +96,8 @@ class DataManager(threading.Thread):
             stateDict['registerVal'].append(val)
             voltage = round(5 + random.uniform(-0.05, 0.05),2) if val else 0 
             stateDict['inputVol'].append(voltage)
-        
         for val in self.getAllCoilsVal():
             stateDict['coilVal'].append(val)
             voltage = 5 if val else 0
             stateDict['outputVol'].append(voltage)
-
         return stateDict
-

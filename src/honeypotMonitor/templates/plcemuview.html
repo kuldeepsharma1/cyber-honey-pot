@@ -41,11 +41,23 @@
                         <tr>
                             <td> {{plcinfo['id']}}</td>
                             <td> {{plcinfo['ip']}}</td>
-                            <td> {{plcinfo['protocol']}}</td>
+                            <td>
+                                {% if plcinfo['protocol'] == 'Modbus' %}
+                                    <span class="badge bg-success">{{plcinfo['protocol']}}</span>
+                                {% else %}
+                                    <span class="badge bg-primary">{{plcinfo['protocol']}}</span>
+                                {% endif%}
+                            </td>
                             <td> {{plcinfo['ladderInfo']}}</td>
                             <td> {{plcinfo['lastUpdateT']}}</td>
                             <td> {{plcinfo['reportT']}}</td>
-                            <td> {{plcinfo['exceptCount']}}</td>
+                            <td>
+                                {% if plcinfo['exceptCount'] == 0 %}
+                                    <span class="badge bg-success">{{plcinfo['exceptCount']}}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{plcinfo['exceptCount']}}</span>
+                                {% endif%}
+                            </td>
                             <td> {{plcinfo['totalRptCount']}}</td>
                         </tr>
                         {% endfor %}

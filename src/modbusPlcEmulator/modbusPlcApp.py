@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #-----------------------------------------------------------------------------
-# Name:        modbusPlcApp.py [python3]
+# Name:        modbusPlcApp.py
 #
 # Purpose:     This module is the main App execution file of the modbus-TCP PLC 
 #              emulator of the honeypot project. It provide the modbus-TCP interface 
@@ -10,7 +10,7 @@
 # Author:      Yuancheng Liu
 #
 # Created:     2024/10/21
-# version:     v0.0.1
+# version:     v0.1.1
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
@@ -101,6 +101,7 @@ def configuration():
 def resetAllowReadIp():
     """"Rest all allow read IPs to config file setting from the web UI"""
     rst = gv.iPlcDataMgr.resetAllowRipList()
+    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to reset the allow read IP list.")
     if rst:
         flash("Rest the allow read IP list success!")
     else: 
@@ -115,6 +116,7 @@ def addAllowReadIp():
     if request.method == 'POST':
         ipstr = str(request.form['newIp'])
         rst = gv.iPlcDataMgr.addAllowReadIp(ipstr)
+        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to add IP %s in the allow read IP list." %ipstr)
         if rst:
             flash("New ip %s is added in the all read ip address list" %str(ipstr))
         else: 
@@ -127,6 +129,7 @@ def addAllowReadIp():
 def resetAllowWriteIp():
     """"Rest all allow write IPs to config file setting from the web UI"""
     rst = gv.iPlcDataMgr.resetAllowWipList()
+    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to reset the allow write IP list.")
     if rst:
         flash("Rest the allow write IP list success!")
     else: 
@@ -141,6 +144,7 @@ def addAllowWriteIp():
     if request.method == 'POST':
         ipstr = str(request.form['newIp'])
         rst = gv.iPlcDataMgr.addAllowWriteIp(ipstr)
+        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to add IP %s in the allow write IP list." %ipstr)
         if rst:
             flash("New ip %s is added in the all write ip address list" %str(ipstr))
         else: 

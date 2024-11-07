@@ -1,10 +1,17 @@
-# This is the config file template for the module <modbusPlcApp.py>
-# Setup the parameter with below format (every line follows <key>:<val> format, the
+# This is the config file template for the PLC honeypot project's Modbus PLC 
+# emulator program <modbusPlcApp.py>
+# Setup the parameter with below format (every line follows <key>:<value> format, the
 # key can not be changed):
 
 #-----------------------------------------------------------------------------
-# The use credential record file 
-USERS_RCD:users.json
+Own_ID:modbusPLC01
+Own_IP:172.168.22.1
+
+# The OT protocol type string, "Modbus" or "S7Comm".
+PRO_TYPE:Modbus
+
+# The ladder logic file id used by this PLC emulator.
+LADDER_ID:mbLadderLogic.py
 
 #-----------------------------------------------------------------------------
 # Define the ip addresses allowed to read PLC state: 
@@ -16,7 +23,18 @@ ALLOW_R_L:["127.0.0.1", "200.200.200.40"]
 ALLOW_W_L:["127.0.0.1", "200.200.200.40"]
 
 #-----------------------------------------------------------------------------
-# Init the Flask app parameters
-FLASK_SER_PORT:5000
+# define the monitor hub parameters : 
+MON_IP:127.0.0.1
+MON_PORT:5000
+
+# Time interval to report to the monitor hub in seconds:
+RPT_INTERVAL:5
+
+#-----------------------------------------------------------------------------
+# Init the PLC local web Flask app parameters
+FLASK_SER_PORT:5001
 FLASK_DEBUG_MD:False
 FLASK_MULTI_TH:True
+
+# The PLC local web  use credential record file 
+USERS_RCD:users.json

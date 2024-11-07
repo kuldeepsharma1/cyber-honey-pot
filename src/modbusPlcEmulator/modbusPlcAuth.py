@@ -1,13 +1,13 @@
 #-----------------------------------------------------------------------------
 # Name:        modbusPlcAuth.py
 #
-# Purpose:     PLC emulator's user autherization module used for check user login, 
+# Purpose:     PLC emulator's user authorization module used for check user login, 
 #              signup and logout.
 #              
 # Author:      Yuancheng Liu
 #
-# Created:     2024/06/03
-# version:     v0.1.3
+# Created:     2024/11/03
+# version:     v0.1.1
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class User(UserMixin):
 # -----------------------------------------------------------------------------
 class userMgr(JsonLoader):
     """ User information manager module to handle add user, delete user, update 
-        user, query user information. It is a child module inherted from  
+        user, query user information. It is a child module inherited from  
         ConfigLoader.JsonLoader
     """
     
@@ -82,20 +82,25 @@ class userMgr(JsonLoader):
             "usertype": str(userType)
         }
         self.jsonData[userName] = data
+        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_WARN, "Added new user: %s" % userName)
         if updateRcd: self.updateRcdFile()
         return True
     
+    # -----------------------------------------------------------------------------
     def updatePwd(self, userName, newPwd, updateRcd=True) :
         if self.userExist(userName):
             self.jsonData[userName]['password'] = str(newPwd)
+            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_WARN, "User %s password is changed" % userName)
             if updateRcd: self.updateRcdFile()
             return True 
         return False
 
+    # -----------------------------------------------------------------------------
     def removeUser(self, userName, updateRcd=True):
         print(userName)
         if self.userExist(userName):
             self.jsonData.pop(userName)
+            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "PLC user detect action, username: %s " % userName)
             if updateRcd: self.updateRcdFile()
             return True            
         return False
@@ -114,6 +119,7 @@ def login_post():
     if gv.iUserMgr.userExist(account):
         if gv.iUserMgr.verifyUser(str(account), str(password)):
             login_user(User(account), remember=remember)
+            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_NORMAL, "User %s login to PLC" % account)
             return redirect(url_for('index'))
         else:
             flash('User password incorrect!')
