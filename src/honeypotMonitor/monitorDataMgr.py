@@ -17,6 +17,15 @@ import monitorGlobal as gv
 # Record number keep by the agent. 
 RCD_NUM = 10
 
+RPT_NORMAL = 'normal'
+RPT_WARN = 'warning'
+RPT_ALERT = 'alert'
+RPT_LOGIN = 'login'
+
+PLC_TYPE='plc'
+CTRL_TYPE='controller'
+
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class agentDev(object):
@@ -48,7 +57,7 @@ class agentDev(object):
         self.totalRptCount += 1
         if len(self.reportList) > self.rcdLimit: self.reportList.pop(0)
         self.reportList.append(reportDict)
-        if reportDict['type'] == 'exception':
+        if reportDict['type'] == RPT_ALERT or reportDict['type']==RPT_WARN:
             self.addExcept(reportDict)
 
     def addExcept(self, exceptDict):
@@ -129,11 +138,18 @@ class DataManger(object):
         reqDict = dict(requestDict)
         action = str(reqDict['Action']).lower()
         data = reqDict['Data']
-        if action == 'login':
-            if str(data['Type']).lower() == 'plc':
+        if action == RPT_LOGIN:
+            if str(data['Type']).lower() == PLC_TYPE:
                 self.addPlc(data['ID'], data['IP'], data['Protocol'], ladderInfo=data['LadderID'])
             elif str(data['Type']).lower() == 'controller':
                 self.addController(data['ID'], data['IP'], data['Protocol'], data['TgtPlcID'], data['TgtPlcIP'])
+        elif action == RPT_NORMAL or action == RPT_WARN or action == RPT_ALERT:
+            if reqDict['ID'] in self.plcDict.keys(): 
+                self.plcDict[reqDict['ID']].addOneReport(data)
+            elif reqDict['ID'] in self.controllerDict.keys(): 
+                self.controllerDict[reqDict['ID']].addOneReport(data)
+            else:
+                gv.gDebugPrint("ID: %s not login before.", logType=gv.LOG_WARN)
         return {"ok": True}
 
     def addPlc(self, plcID, plcIP, protocol, ladderInfo=None):

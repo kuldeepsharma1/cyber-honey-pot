@@ -17,6 +17,7 @@ from flask_login import login_user, login_required, logout_user, UserMixin
 
 import modbusPlcGlobal as gv
 from ConfigLoader import JsonLoader
+from monitorClient import RPT_NORMAL, RPT_WARN, RPT_ALERT
 
 auth = Blueprint('auth', __name__)
 
@@ -82,7 +83,7 @@ class userMgr(JsonLoader):
             "usertype": str(userType)
         }
         self.jsonData[userName] = data
-        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_WARN, "Added new user: %s" % userName)
+        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_WARN, "Added new user: %s" % userName)
         if updateRcd: self.updateRcdFile()
         return True
     
@@ -90,7 +91,7 @@ class userMgr(JsonLoader):
     def updatePwd(self, userName, newPwd, updateRcd=True) :
         if self.userExist(userName):
             self.jsonData[userName]['password'] = str(newPwd)
-            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_WARN, "User %s password is changed" % userName)
+            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_WARN, "User %s password is changed" % userName)
             if updateRcd: self.updateRcdFile()
             return True 
         return False
@@ -100,7 +101,7 @@ class userMgr(JsonLoader):
         print(userName)
         if self.userExist(userName):
             self.jsonData.pop(userName)
-            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "PLC user detect action, username: %s " % userName)
+            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "PLC user detect action, username: %s " % userName)
             if updateRcd: self.updateRcdFile()
             return True            
         return False
@@ -119,7 +120,7 @@ def login_post():
     if gv.iUserMgr.userExist(account):
         if gv.iUserMgr.verifyUser(str(account), str(password)):
             login_user(User(account), remember=remember)
-            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_NORMAL, "User %s login to PLC" % account)
+            if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_NORMAL, "User %s login to PLC" % account)
             return redirect(url_for('index'))
         else:
             flash('User password incorrect!')

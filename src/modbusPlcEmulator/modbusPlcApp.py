@@ -23,6 +23,7 @@ import modbusPlcGlobal as gv
 import modbusPlcAuth
 import modbusPlcDataMgr
 import monitorClient
+from monitorClient import RPT_ALERT
 
 #-----------------------------------------------------------------------------
 # Init the flask web app program.
@@ -101,7 +102,7 @@ def configuration():
 def resetAllowReadIp():
     """"Rest all allow read IPs to config file setting from the web UI"""
     rst = gv.iPlcDataMgr.resetAllowRipList()
-    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to reset the allow read IP list.")
+    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to reset the allow read IP list.")
     if rst:
         flash("Rest the allow read IP list success!")
     else: 
@@ -116,7 +117,7 @@ def addAllowReadIp():
     if request.method == 'POST':
         ipstr = str(request.form['newIp'])
         rst = gv.iPlcDataMgr.addAllowReadIp(ipstr)
-        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to add IP %s in the allow read IP list." %ipstr)
+        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to add IP %s in the allow read IP list." %ipstr)
         if rst:
             flash("New ip %s is added in the all read ip address list" %str(ipstr))
         else: 
@@ -129,7 +130,7 @@ def addAllowReadIp():
 def resetAllowWriteIp():
     """"Rest all allow write IPs to config file setting from the web UI"""
     rst = gv.iPlcDataMgr.resetAllowWipList()
-    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to reset the allow write IP list.")
+    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to reset the allow write IP list.")
     if rst:
         flash("Rest the allow write IP list success!")
     else: 
@@ -144,7 +145,7 @@ def addAllowWriteIp():
     if request.method == 'POST':
         ipstr = str(request.form['newIp'])
         rst = gv.iPlcDataMgr.addAllowWriteIp(ipstr)
-        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(gv.RPT_ALERT, "User try to add IP %s in the allow write IP list." %ipstr)
+        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to add IP %s in the allow write IP list." %ipstr)
         if rst:
             flash("New ip %s is added in the all write ip address list" %str(ipstr))
         else: 

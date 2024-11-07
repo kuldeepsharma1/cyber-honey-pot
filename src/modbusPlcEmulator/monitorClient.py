@@ -22,6 +22,11 @@ from queue import Queue
 
 MAX_RTP_NUM = 10    # Default report C2 server time interval(sec)
 
+RPT_NORMAL = 'normal'
+RPT_WARN = 'warning'
+RPT_ALERT = 'alert'
+RPT_LOGIN = 'login'
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class monitorClient(threading.Thread):
@@ -55,7 +60,7 @@ class monitorClient(threading.Thread):
         data = {
             'type': actionType,
             'Times': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'message': reportMsg
+            'message': actionType+' : '+reportMsg
         }
         self.reportQueue.put((actionType, data))
 
@@ -85,7 +90,7 @@ class monitorClient(threading.Thread):
     def logintoMonitor(self):
         """ Login to the monitor hub when the program start."""
         data = copy.deepcopy(self.parentInfoDict)
-        action = 'login'
+        action = RPT_LOGIN
         self.report2Monitor(action, data)
 
     #-----------------------------------------------------------------------------

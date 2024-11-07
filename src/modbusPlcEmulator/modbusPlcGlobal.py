@@ -80,10 +80,6 @@ COOKIE_TIME = 30
 ALLOW_R_L = json.loads(CONFIG_DICT['ALLOW_R_L'])
 ALLOW_W_L = json.loads(CONFIG_DICT['ALLOW_W_L'])
 
-RPT_NORMAL = 'normal'
-RPT_WARN = 'warning'
-RPT_ALERT = 'alert'
-
 #-----------------------------------------------------------------------------
 # Init the global value
 
