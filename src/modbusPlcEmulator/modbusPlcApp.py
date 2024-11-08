@@ -162,6 +162,7 @@ def accmgmt():
             }
     return render_template('accmgmt.html', posts=posts)
 
+# -----------------------------------------------------------------------------
 @app.route('/accmgmt/<string:username>/<string:action>', methods=('POST',))
 @login_required
 def changeAcc(username, action):
@@ -177,6 +178,7 @@ def changeAcc(username, action):
             flash('User not found.')
     return redirect(url_for('accmgmt'))
 
+# -----------------------------------------------------------------------------
 @app.route('/addnewuser', methods=['POST', ])
 @login_required
 def addnewuser():
@@ -196,6 +198,7 @@ def addnewuser():
             flash('User [ %s ] has been exist.' % str(tgtUser))
     return redirect(url_for('accmgmt'))
 
+# -----------------------------------------------------------------------------
 @app.route('/setpassword/<string:username>', methods=['POST', ])
 @login_required
 def setpassword(username):

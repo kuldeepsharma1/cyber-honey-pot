@@ -49,7 +49,6 @@ class monitorClient(threading.Thread):
         self.terminate = False 
         self.reportQueue = Queue(maxsize=MAX_RTP_NUM)
         
-
     #-----------------------------------------------------------------------------
     def addReportDict(self, actionType, reportMsg):
         """ Add the report message to the queue.

@@ -8,11 +8,13 @@
 {% block script %} 
 
 <script>
+    var updateInterval = 2000; // Update interval in milliseconds
     // Function to auto-refresh the page
     function timedRefresh(timeoutPeriod) {
         setTimeout("location.reload(true);",timeoutPeriod);
     }
-    window.onload = timedRefresh(2000); // refresh every 2 sec.
+    
+    window.onload = timedRefresh(updateInterval); // refresh every 2 sec.
 </script>
 
 {% endblock %}
@@ -23,6 +25,7 @@
 
     <li class="list-group-item">
         <h3> <b class="text-success"> PLC Contact and Coil State </b></h3>
+        <p> </p>
     </li>
     <br>
     <div class="row">

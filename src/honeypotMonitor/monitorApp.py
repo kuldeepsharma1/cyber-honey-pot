@@ -62,6 +62,11 @@ def plcemuview():
     return render_template('plcemuview.html', posts=posts)
 
 #-----------------------------------------------------------------------------
+@app.route('/<string:postID>')
+def plcpeerstate(postID):
+    return render_template('plcpeerstate.html',posts=None)
+
+#-----------------------------------------------------------------------------
 @app.route('/dataPost', methods=('POST',))
 def dataPost():
     """ Handle program data submittion request.
