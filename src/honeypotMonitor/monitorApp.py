@@ -48,7 +48,11 @@ def index():
 @app.route('/controllerview')
 def controllerview():
     """ route to the ladder logic page."""
-    posts = {'page': 1}
+    infoList = gv.iDataMgr.getAllControllerState()
+    print(infoList)
+    posts = {'page': 1,
+             'controllerinfo': infoList
+             }
     return render_template('controllerview.html', posts=posts)
 
 #-----------------------------------------------------------------------------
@@ -62,9 +66,14 @@ def plcemuview():
     return render_template('plcemuview.html', posts=posts)
 
 #-----------------------------------------------------------------------------
-@app.route('/<string:postID>')
+@app.route('/plc/<string:postID>')
 def plcpeerstate(postID):
     return render_template('plcpeerstate.html',posts=None)
+
+#-----------------------------------------------------------------------------
+@app.route('/controller/<string:postID>')
+def ctrlpeerstate(postID):
+    return render_template('ctrlpeerstate.html',posts=None)
 
 #-----------------------------------------------------------------------------
 @app.route('/dataPost', methods=('POST',))

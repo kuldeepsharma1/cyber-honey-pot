@@ -22,6 +22,7 @@ import mbPlcControllerGlobal as gv
 import modbusTcpCom
 import udpCom
 
+import monitorClient
 from mbLadderLogic import ladderLogic
 
 #-----------------------------------------------------------------------------
@@ -83,8 +84,13 @@ class plcControllerApp(object):
         randomly then check the plc execution result.
     """
     def __init__(self) -> None:
-        self.dataManager = DataManager(None)
-        self.dataManager.start()
+
+        gv.iMonitorClient = monitorClient.monitorClient(gv.gMonHubIp, gv.gMonHubPort, 
+                                                reportInterval=gv.gReportInv)
+
+        gv.iMonitorClient.setParentInfo(gv.gOwnID, gv.gOwnIP, monitorClient.CTRL_TYPE, gv.gProType, 
+                                        tgtID=gv.gPlcID, tgtIP=gv.gPlcIP, ladderID=gv.gLadderID)
+
         self.modbusClient = modbusTcpCom.modbusTcpClient(gv.gPlcIP, tgtPort=gv.gPlcPort)
         self.ladderLogic = ladderLogic(None)
         self.terminate = False
@@ -94,6 +100,8 @@ class plcControllerApp(object):
             gv.gDebugPrint("Read coil state: %s" %str(self.modbusClient.getCoilsBits(0, 8)), 
                            logType=gv.LOG_INFO)
             time.sleep(0.5)
+        gv.iMonitorClient.logintoMonitor()
+        gv.iMonitorClient.start()
 
     #-----------------------------------------------------------------------------
     def startClient(self):
@@ -107,22 +115,22 @@ class plcControllerApp(object):
             gv.gDebugPrint("Start to set the registers.", logType=gv.LOG_INFO)
             # generate random register input
             regVals = [randint(0, 1) for i in range(8)]
-            gv.gDebugPrint("Random generted input: %s" %str(regVals), logType=gv.LOG_INFO)
+            gv.gDebugPrint("Random generate input: %s" %str(regVals), logType=gv.LOG_INFO)
             result = self.ladderLogic.runLadderLogic(regVals)
-            reusltExp = [i == 1 for i in result]
-            gv.gDebugPrint("Calculated output: %s" %str(reusltExp), logType=gv.LOG_INFO)
+            resultExp = [i == 1 for i in result]
+            gv.gDebugPrint("Calculated output: %s" %str(resultExp), logType=gv.LOG_INFO)
             for i in range(8):
                 self.modbusClient.setHoldingRegs(i, regVals[i])
                 time.sleep(0.1)
             time.sleep(1)
-            resultGet = self.modbusClient.getCoilsBits(0, 4)
-            gv.gDebugPrint("Get PLC reuslt: %s" %str(resultGet), logType=gv.LOG_INFO)
+            resultGet = self.modbusClient.getCoilsBits(0, 8)
+            gv.gDebugPrint("Get PLC result: %s" %str(resultGet), logType=gv.LOG_INFO)
             # set connection state
             connectionRst = False if resultGet is None else True 
-            self.dataManager.setPLCconnection(connectionRst)
+            #self.dataManager.setPLCconnection(connectionRst)
             # check the result
-            matchRst = resultGet == reusltExp
-            self.dataManager.setCoilState(matchRst, resultGet)
+            matchRst = resultGet == resultExp
+            #self.dataManager.setCoilState(matchRst, resultGet)
             time.sleep(gv.gPlcConnInt)
             print("Finish one PLC check round.")
 

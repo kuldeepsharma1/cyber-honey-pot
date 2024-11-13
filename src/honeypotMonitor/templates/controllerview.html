@@ -28,7 +28,7 @@
             <li class="list-group-item">
                 <table class="table table-bordered table-sm">
                     <thead class="table-dark">
-                        <tr>
+                        <tr class="table-secondary">
                             <th>Controller ID</th>
                             <th>IP_address</th>
                             <th>OT_Protocol</th>
@@ -41,17 +41,40 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for plcinfo in posts['controllerinfo'] %}
                         <tr>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
+                            <tr>
+                                <td> 
+                                    <a href="{{ url_for('ctrlpeerstate', postID=plcinfo['id'])}}" target="_blank">
+                                        {{plcinfo['id']}}
+                                    </a> 
+                                </td>
+    
+                                <td> {{plcinfo['ip']}}</td>
+                                <td>
+                                    {% if plcinfo['protocol'] == 'Modbus' %}
+                                        <span class="badge bg-success">{{plcinfo['protocol']}}</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">{{plcinfo['protocol']}}</span>
+                                    {% endif%}
+                                </td>
+                                <td> {{plcinfo['lastUpdateT']}}</td>
+                                <td> {{plcinfo['reportT']}} mins</td>
+                                
+                                <td> {{plcinfo['TargetID']}}</td>
+                                <td> {{plcinfo['TargetIP']}}</td>
+                                
+                                <td>
+                                    {% if plcinfo['exceptCount'] == 0 %}
+                                        <span class="badge bg-success">{{plcinfo['exceptCount']}}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">{{plcinfo['exceptCount']}}</span>
+                                    {% endif%}
+                                </td>
+                                <td> {{plcinfo['totalRptCount']}}</td>
+                            </tr>
                         </tr>
+                        {%endfor%}
                     </tbody>
                 </table>
             </li>

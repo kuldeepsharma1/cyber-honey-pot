@@ -23,7 +23,7 @@ import modbusPlcGlobal as gv
 import modbusPlcAuth
 import modbusPlcDataMgr
 import monitorClient
-from monitorClient import RPT_ALERT
+from monitorClient import RPT_ALERT, PLC_TYPE
 
 #-----------------------------------------------------------------------------
 # Init the flask web app program.
@@ -54,7 +54,7 @@ gv.iPlcDataMgr.start()
 gv.iMonitorClient = monitorClient.monitorClient( gv.gMonHubIp, gv.gMonHubPort, 
                                                 reportInterval=gv.gReportInv)
 
-gv.iMonitorClient.setParentInfo(gv.gOwnID, gv.gOwnIP, 'plc', gv.gProType, 
+gv.iMonitorClient.setParentInfo(gv.gOwnID, gv.gOwnIP, PLC_TYPE, gv.gProType, 
                                 ladderID=gv.gLadderID)
 gv.iMonitorClient.logintoMonitor()
 gv.iMonitorClient.start()

@@ -27,6 +27,9 @@ RPT_WARN = 'warning'
 RPT_ALERT = 'alert'
 RPT_LOGIN = 'login'
 
+PLC_TYPE='plc'
+CTRL_TYPE='controller'
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class monitorClient(threading.Thread):

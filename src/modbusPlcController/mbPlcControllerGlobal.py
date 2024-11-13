@@ -74,11 +74,25 @@ def gDebugPrint(msg, prt=True, logType=None):
 
 #-----------------------------------------------------------------------------
 # Init the global value
-# plc connection 
+
+# Own Information
+gOwnID = CONFIG_DICT['OWN_ID']
+gOwnIP = CONFIG_DICT['OWN_IP']
+gProType = CONFIG_DICT['PRO_TYPE']
+gLadderID = CONFIG_DICT['LADDER_ID']
+
+# Honeypot monitor server config
+gMonHubIp = CONFIG_DICT['MON_IP']
+gMonHubPort = int(CONFIG_DICT['MON_PORT'])
+gReportInv = int(CONFIG_DICT['RPT_INTERVAL'])
+
+# plc connection
+gPlcID = CONFIG_DICT['PLC_ID']
 gPlcIP = CONFIG_DICT['PLC_IP']
 gPlcPort = int(CONFIG_DICT['PLC_PORT'])
 gPlcConnInt = int(CONFIG_DICT['PLC_CINT'])
-# udp service 
-gUDPPort = int(CONFIG_DICT['UDP_PORT'])
-# OT challenge flag
-#gFlgStr = CONFIG_DICT['ERR_CODE']
+
+#-----------------------------------------------------------------------------
+# Init the global instances
+iPlcLadderLogic = None
+iMonitorClient = None

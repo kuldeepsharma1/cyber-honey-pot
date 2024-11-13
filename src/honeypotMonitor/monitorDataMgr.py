@@ -25,7 +25,6 @@ RPT_LOGIN = 'login'
 PLC_TYPE='plc'
 CTRL_TYPE='controller'
 
-
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class agentDev(object):
@@ -121,8 +120,8 @@ class agentController(agentDev):
 
     def getControllerState(self):
         dataDict = self.getAgentState()
-        dataDict['tgtPlcID'] = self.tgtPlcID
-        dataDict['tgtPlcIP'] = self.tgtPlcIP
+        dataDict['TargetID'] = self.tgtPlcID
+        dataDict['TargetIP'] = self.tgtPlcIP
         return dataDict
 
 #-----------------------------------------------------------------------------
@@ -141,8 +140,10 @@ class DataManger(object):
         if action == RPT_LOGIN:
             if str(data['Type']).lower() == PLC_TYPE:
                 self.addPlc(data['ID'], data['IP'], data['Protocol'], ladderInfo=data['LadderID'])
+                gv.gDebugPrint("PLC Emulator: %s login." % data['ID'], logType=gv.LOG_INFO)
             elif str(data['Type']).lower() == 'controller':
-                self.addController(data['ID'], data['IP'], data['Protocol'], data['TgtPlcID'], data['TgtPlcIP'])
+                self.addController(data['ID'], data['IP'], data['Protocol'], data['TargetID'], data['TargetIP'])
+                gv.gDebugPrint("PLC Controller: %s login." % data['ID'], logType=gv.LOG_INFO)
         elif action == RPT_NORMAL or action == RPT_WARN or action == RPT_ALERT:
             if reqDict['ID'] in self.plcDict.keys(): 
                 self.plcDict[reqDict['ID']].addOneReport(data)
