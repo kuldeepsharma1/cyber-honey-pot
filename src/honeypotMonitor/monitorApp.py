@@ -81,7 +81,13 @@ def plcpeerstate(postID):
 @app.route('/controller/<string:postID>')
 def ctrlpeerstate(postID):
     controllerInfo = gv.iDataMgr.getControllerState(postID)
-    return render_template('ctrlpeerstate.html',posts=controllerInfo)
+    posts = {
+        'controllerinfo': controllerInfo,
+    }
+    reportDict = gv.iDataMgr.getControllerReport(postID)
+    if reportDict is not None:
+        posts.update(reportDict)
+    return render_template('ctrlpeerstate.html',posts=posts)
 
 #-----------------------------------------------------------------------------
 @app.route('/dataPost', methods=('POST',))
