@@ -86,7 +86,7 @@ class rtuLadderLogic(object):
         self.initLadderInfo()
 
     def initLadderInfo(self):
-        """ Init thesrc and dest address information, this function will 
+        """ Init the src and dest address information, this function will 
             be called during the logic init. Please over write this function.
         """
         pass

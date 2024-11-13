@@ -64,8 +64,8 @@ class ladderLogic(modbusTcpCom.ladderLogic):
         c4 = not (regsList[4] or regsList[5])
         # rung 5: (not HR0) and HR6 -> Q5
         c5 = (not regsList[0]) and regsList[6]
-        # rung 6: HR3 or (not HR3) -> Q6
-        c6 = regsList[3] or (not regsList[3])
+        # rung 6: HR3 or (not HR7) -> Q6
+        c6 = regsList[3] or (not regsList[7])
         # rung 7: HR5 -> Q7
         c7 = regsList[5]
         return [c0, c1, c2, c3, c4, c5, c6, c7]
