@@ -61,7 +61,11 @@
                                 <td> {{plcinfo['lastUpdateT']}}</td>
                                 <td> {{plcinfo['reportT']}} mins</td>
                                 
-                                <td> {{plcinfo['TargetID']}}</td>
+                                <td> 
+                                    <a href="{{ url_for('plcpeerstate', postID=plcinfo['TargetID'])}}" target="_blank">
+                                        {{plcinfo['TargetID']}}
+                                    </a> 
+                                </td>
                                 <td> {{plcinfo['TargetIP']}}</td>
                                 
                                 <td>

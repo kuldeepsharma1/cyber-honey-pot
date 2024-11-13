@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
 # Name:        mbPlcControllerApp.py
 #
-# Purpose:     This modulde is the controller program start a Modbus-TCP PLC 
+# Purpose:     This module is the controller program start a Modbus-TCP PLC 
 #              client to connect to the PLC to set the holding register and 
 #              read the coil status. It also provide a UDP service for people 
 #              to read the PLC state.
@@ -20,62 +20,9 @@ from random import randint
 
 import mbPlcControllerGlobal as gv
 import modbusTcpCom
-import udpCom
 
 import monitorClient
 from mbLadderLogic import ladderLogic
-
-#-----------------------------------------------------------------------------
-#-----------------------------------------------------------------------------
-class DataManager(threading.Thread):
-    """ Data storage and management module running parallel with the main thread 
-        to handle the UDP data fetch request.
-    """
-    def __init__(self, parent) -> None:
-        threading.Thread.__init__(self)
-        self.plcConnected = False   # flag to identify whehter PLC is connected.
-        self.coilStateList = []     # plc coils state
-        self.rstMatchFlg = False    # flag to identify whether the PLC state match the expect result.
-        self.udpServer = udpCom.udpServer(None, gv.gUDPPort)
-
-    #-----------------------------------------------------------------------------
-    def msgHandler(self, msg):
-        """ The request handler method passed into the UDP server to handle the 
-            incoming messages.
-        """
-        if isinstance(msg, bytes): msg = msg.decode('utf-8')
-        msg = msg.strip()
-        if str(msg).lower() == 'getstate':
-            # Return PLC not connected state
-            if not self.plcConnected: return 'state: PLC rejected connection.'
-            # Return the PLC result compare state
-            state = 'normal' if self.rstMatchFlg else 'error'
-            val = ';'.join([str(val) for val in self.coilStateList]) if self.rstMatchFlg else gv.gFlgStr
-            return 'state:'+str(state)+';'+val
-        else:
-            return 'Error: Input request invalid: %s' %str(msg)
-
-    def setCoilState(self, match, val):
-        """ Set the coil state list and match flag """
-        if match:
-            self.rstMatchFlg = True
-            self.coilStateList = val
-        else:
-            self.rstMatchFlg = False
-
-    def setPLCconnection(self, state):
-        self.plcConnected = state
-
-    def run(self):
-        gv.gDebugPrint("UDP server started listening port: %s" %str(gv.gUDPPort), 
-                       logType=gv.LOG_INFO)
-        self.udpServer.serverStart(handler=self.msgHandler)
-
-    def stop(self):
-        self.udpServer.serverStop()
-        endClient = udpCom.udpClient(('127.0.0.1', gv.gUDPPort))
-        endClient.disconnect()
-        endClient = None
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -126,14 +73,21 @@ class plcControllerApp(object):
             resultGet = self.modbusClient.getCoilsBits(0, 8)
             gv.gDebugPrint("Get PLC result: %s" %str(resultGet), logType=gv.LOG_INFO)
             # set connection state
-            connectionRst = False if resultGet is None else True 
-            #self.dataManager.setPLCconnection(connectionRst)
-            # check the result
+            connectionRst = False if resultGet is None else True
+            if not connectionRst:
+                gv.iMonitorClient.addReportDict(monitorClient.RPT_ALERT, 
+                                                "alert:Lost connection to target PLC")
+                gv.gDebugPrint("Lost connection to target PLC", logType=gv.LOG_INFO)
             matchRst = resultGet == resultExp
+            if not matchRst:
+                gv.iMonitorClient.addReportDict(monitorClient.RPT_ALERT, 
+                                                "alert:PLC output not match with expected")
+                gv.gDebugPrint("PLC output not match with expected")
             #self.dataManager.setCoilState(matchRst, resultGet)
             time.sleep(gv.gPlcConnInt)
+            gv.iMonitorClient.addReportDict(monitorClient.RPT_NORMAL, "PLC Control Loop Normal")
             print("Finish one PLC check round.")
-
+            
         gv.gDebugPrint("PLC client terminated", logType=gv.LOG_INFO)
 
 #-----------------------------------------------------------------------------
