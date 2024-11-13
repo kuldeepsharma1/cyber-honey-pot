@@ -167,6 +167,16 @@ class DataManger(object):
         else:
             return None
 
+    def getPlcReport(self, plcID):
+        if plcID in self.plcDict.keys():
+            result = {
+                'report': self.plcDict[plcID].getRecordList(), 
+                'alert': self.plcDict[plcID].getExecptList()
+            }
+            return result
+        else:
+            return None
+
     def getAllPlcState(self):
         return [self.plcDict[plcID].getPLCState() for plcID in self.plcDict.keys()]
     
@@ -186,3 +196,13 @@ class DataManger(object):
         
     def getAllControllerState(self):
         return [self.controllerDict[controllerID].getControllerState() for controllerID in self.controllerDict.keys()]
+    
+    def getControllerReport(self, controllerID):
+        if controllerID in self.controllerDict.keys():
+            result = {
+                'report': self.controllerDict[controllerID].getRecordList(), 
+                'alert': self.controllerDict[controllerID].getExecptList()
+            }
+            return result
+        else:
+            return None

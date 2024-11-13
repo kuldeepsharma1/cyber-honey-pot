@@ -61,7 +61,7 @@ class monitorClient(threading.Thread):
         if self.reportQueue.full(): self.reportQueue.get()
         data = {
             'type': actionType,
-            'Times': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'message': actionType+' : '+reportMsg
         }
         self.reportQueue.put((actionType, data))

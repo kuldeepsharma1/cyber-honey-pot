@@ -68,12 +68,20 @@ def plcemuview():
 #-----------------------------------------------------------------------------
 @app.route('/plc/<string:postID>')
 def plcpeerstate(postID):
-    return render_template('plcpeerstate.html',posts=None)
+    plcInfo = gv.iDataMgr.getPlcState(postID)
+    posts = {
+        'plcinfo': plcInfo,
+    }
+    reportDict = gv.iDataMgr.getPlcReport(postID)
+    if reportDict is not None:
+        posts.update(reportDict)
+    return render_template('plcpeerstate.html',posts=posts)
 
 #-----------------------------------------------------------------------------
 @app.route('/controller/<string:postID>')
 def ctrlpeerstate(postID):
-    return render_template('ctrlpeerstate.html',posts=None)
+    controllerInfo = gv.iDataMgr.getControllerState(postID)
+    return render_template('ctrlpeerstate.html',posts=controllerInfo)
 
 #-----------------------------------------------------------------------------
 @app.route('/dataPost', methods=('POST',))
