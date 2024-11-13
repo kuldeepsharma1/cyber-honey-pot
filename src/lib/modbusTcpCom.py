@@ -132,12 +132,12 @@ class plcDataHandler(DataHandler):
         self.ladderDict = OrderedDict()
 
     def _checkAllowRead(self, ipaddress):
-        """ Check whether the input IP addres is allowed to read the info."""
+        """ Check whether the input IP address is allowed to read the info."""
         if (self.allowRipList is None) or (ipaddress in self.allowRipList): return True
         return False 
 
     def _checkAllowWrite(self, ipaddress):
-        """ Check whether the input IP addres is allowed to write the info."""
+        """ Check whether the input IP address is allowed to write the info."""
         if (self.allowWipList is None) or (ipaddress in self.allowWipList): return True
         return False
     
@@ -188,7 +188,7 @@ class plcDataHandler(DataHandler):
 # Init all the iterator read() functions.(Internal callback by <modbusTcpServer>)
 # All the input args will follow below below formate:
 #   address (int): output coils address idx [Q0.x] 
-#   count (int): address offset, return list length will be x + offsert.
+#   count (int): address offset, return list length will be x + offset.
 #   srv_info (ModbusServer.ServerInfo>): passed in by server.
 
     def read_coils(self, address, addrOffset, srv_info):
@@ -231,7 +231,7 @@ class plcDataHandler(DataHandler):
 # Init all the iterator write() functions.(Internal callback by <modbusTcpServer>)
 # All the input args will follow below below formate:
 #   address (int): output coils address idx [Q0.x] 
-#   count (int): address offset, return list length will be x + offsert.
+#   count (int): address offset, return list length will be x + offset.
 #   srv_info (ModbusServer.ServerInfo>): passed in by server.
 
 
