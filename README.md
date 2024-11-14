@@ -2,7 +2,7 @@
 
 ![](doc/img/logo.png)
 
-**Program Design Propose** : we want to create a Python programmed PLC honey pot system to simulate the SCADA(Supervisory Control and Data Acquisition) network of a OT environment between the lvl1 OT field device PLC and the lvl2 related controller program such as HMI. It can simulate multiple PLC models from different vendors (such as Schneider and Siemens) with two main PLC communication protocol: Modbus-TCP and Siemens-S7Comm. The system will provide PLC emulator, OT controller simulator, ladder logic verifier, Data Logger and System Monitor. As a honey pot, it will provide the function to detect un-authorized attack access for PLC (such as http/https PLC config page login), FCI and FDI attack detection and log all the sub system execution state in real time for user/defender/blue team to detect and monitor the attacker/red team's action. The system can be used for cyber security training, attack and defense cyber exercise, CTF and other hands on cyber attack competition. 
+**Program Design Propose** : This project aims to develop a sophisticated honeypot system that emulates an OT (Operational Technology) SCADA network environment, bridging Level 1 OT field controller devices (PLCs) with Level 2 control programs, including Human-Machine Interfaces (HMIs). This honeypot will simulate various PLC models from major vendors, such as Schneider and Siemens, while supporting the primary communication protocols `Modbus-TCP` and `Siemens-S7Comm`. The system will integrate essential components: PLC emulator, OT controller simulator, ladder logic verifier, data logger, attack detector and system monitor. As a cybersecurity honeypot, this project will detect unauthorized access attempts on PLCs, including attempts to log in to PLC configuration pages via HTTP/HTTPS, and will monitor for possible attack scenario such as Denial of Service (DoS),  False Command Injection (FCI) and False Data Injection (FDI) attacks. The system will log and display real-time data on system execution states, enabling defenders or blue teams to monitor and analyze attacker or red team behaviors. Designed for cybersecurity training, cyber defense exercises, Capture the Flag (CTF) challenges, and hands-on attack/defense competitions, this PLC honeypot provides a realistic and interactive platform for advancing OT cybersecurity skills and strategies.
 
 ```
 # Created:     2024/10/28
@@ -18,6 +18,24 @@
 ------
 
 ### Introduction
+
+
+
+
+
+#### Network Design 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
