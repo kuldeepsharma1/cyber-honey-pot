@@ -26,7 +26,7 @@ import platform
 print("Current working directory is : %s" % os.getcwd())
 DIR_PATH = dirpath = os.path.dirname(os.path.abspath(__file__))
 print("Current source code location : %s" % dirpath)
-APP_NAME = ('modbusPlc', 'emulator')
+APP_NAME = ('s7commPlc', 'emulator')
 
 TOPDIR = 'src'
 LIBDIR = 'lib'

@@ -53,19 +53,19 @@ class ladderLogic(snap7Comm.rtuLadderLogic):
             
             # Run the rung and set all the memory destination value
             # rung 0: ms0 and ms1 -> ds0
-            c0 = ms0 and ms1
+            c0 = ms0 and ms7
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][0], 
                                     self.destAddrValInfo['dataIdx'][0], c0)
             # rung 1: not ms2 -> ds1
-            c1 = not ms2
+            c1 = not ms1
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][0],
                                     self.destAddrValInfo['dataIdx'][1], c1)
             # rung 2: ms2 and ms3 and ms4 -> ds2
-            c2 = ms3
+            c2 = ms2 and ms3 and ms4
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][0],
                                     self.destAddrValInfo['dataIdx'][2], c2)
             # rung 3: ms0 or ms6-> ds3
-            c3 = ms0 or ms6
+            c3 = (not ms0) or ms6
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][0],
                                     self.destAddrValInfo['dataIdx'][3], c3)
             # rung 4: not(ms4 or ms5) -> ds4
@@ -73,7 +73,7 @@ class ladderLogic(snap7Comm.rtuLadderLogic):
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                     self.destAddrValInfo['dataIdx'][0], c4)
             # rung 5: not ms0 or ms6 -> ds5
-            c5 = ms5 or ms6
+            c5 = (not ms0) or ms6
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                      self.destAddrValInfo['dataIdx'][1], c5)
             # rung 6: ms3 or not ms7 -> ds6
@@ -85,3 +85,26 @@ class ladderLogic(snap7Comm.rtuLadderLogic):
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                      self.destAddrValInfo['dataIdx'][3], c7)
             
+    def runVerifyLadderLogic(self, regsList):
+        """ Execute the ladder logic with the input holding register list and set 
+            the output coils. In this example, there will be 8 rungs to be executed.
+        """
+        # coils will be set ast the reverse state of the input registers' state. 
+        if len(regsList) != 8: return None
+        # rung 0: HR0 and HR7 -> Q0
+        c0 = regsList[0] and regsList[7]
+        # rung 1: not HR1 -> Q1
+        c1 = not regsList[1]
+        # rung 2: HR2 and HR3 and HR4 -> Q2
+        c2 = regsList[2] and regsList[3] and regsList[4]
+        # rung 3: not HR0 or HR6 -> Q3
+        c3 = (not regsList[0]) or regsList[6]
+        # rung 4: not (HR4 or HR5) -> Q4
+        c4 = not (regsList[4] or regsList[5])
+        # rung 5: (not HR0) and HR6 -> Q5
+        c5 = (not regsList[0]) and regsList[6]
+        # rung 6: HR3 or (not HR7) -> Q6
+        c6 = regsList[3] or (not regsList[7])
+        # rung 7: HR5 -> Q7
+        c7 = not regsList[5]
+        return [c0, c1, c2, c3, c4, c5, c6, c7]

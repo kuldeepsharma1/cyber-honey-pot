@@ -59,6 +59,7 @@ class plcControllerApp(object):
         gv.gDebugPrint("PLC controller started", logType=gv.LOG_INFO)
 
         while not self.terminate:
+            time.sleep(gv.gPlcConnInt)
             gv.gDebugPrint("Start to set the registers.", logType=gv.LOG_INFO)
             # generate random register input
             regVals = [randint(0, 1) for i in range(8)]
@@ -78,13 +79,13 @@ class plcControllerApp(object):
                 gv.iMonitorClient.addReportDict(monitorClient.RPT_ALERT, 
                                                 "alert:Lost connection to target PLC")
                 gv.gDebugPrint("Lost connection to target PLC", logType=gv.LOG_INFO)
+                continue
             matchRst = resultGet == resultExp
             if not matchRst:
                 gv.iMonitorClient.addReportDict(monitorClient.RPT_ALERT, 
                                                 "alert:PLC output not match with expected")
                 gv.gDebugPrint("PLC output not match with expected")
-            #self.dataManager.setCoilState(matchRst, resultGet)
-            time.sleep(gv.gPlcConnInt)
+                continue
             gv.iMonitorClient.addReportDict(monitorClient.RPT_NORMAL, "PLC Control Loop Normal")
             print("Finish one PLC check round.")
             
