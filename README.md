@@ -2,7 +2,9 @@
 
 ![](doc/img/logo.png)
 
-**Program Design Propose** : This project aims to develop a sophisticated honeypot system that emulates an OT (Operational Technology) SCADA network environment, bridging Level 1 OT field controller devices (PLCs) with Level 2 control programs, including Human-Machine Interfaces (HMIs). This honeypot will simulate various PLC models from major vendors, such as Schneider and Siemens, while supporting the primary communication protocols `Modbus-TCP` and `Siemens-S7Comm`. The system will integrate essential components: PLC emulator, OT controller simulator, ladder logic verifier, data logger, attack detector and system monitor. As a cybersecurity honeypot, this project will detect unauthorized access attempts on PLCs, including attempts to log in to PLC configuration pages via HTTP/HTTPS, and will monitor for possible attack scenario such as Denial of Service (DoS),  False Command Injection (FCI) and False Data Injection (FDI) attacks. The system will log and display real-time data on system execution states, enabling defenders or blue teams to monitor and analyze attacker or red team behaviors. Designed for cybersecurity training, cyber defense exercises, Capture the Flag (CTF) challenges, and hands-on attack/defense competitions, this PLC honeypot provides a realistic and interactive platform for advancing OT cybersecurity skills and strategies.
+**Program Design Propose** : This project aims to develop a sophisticated honeypot system that emulates an OT (Operational Technology) SCADA network environment, bridging Level 1 OT field controller devices (PLCs) with Level 2 control programs, including Human-Machine Interfaces (HMIs). This honeypot will simulate various PLC models from major vendors, such as Schneider and Siemens, while supporting the primary communication protocols `Modbus-TCP` and `Siemens-S7Comm`. The system will integrate essential components: PLC emulator, OT controller simulator, ladder logic verifier, data logger, attack detector and system monitor. 
+
+As a cybersecurity honeypot, this project will detect unauthorized access attempts on PLCs, including attempts to log in to PLC configuration pages via HTTP/HTTPS, and will monitor for possible attack scenario such as Denial of Service (DoS),  False Command Injection (FCI) and False Data Injection (FDI) attacks. The system will log and display real-time data on system execution states, enabling defenders or blue teams to monitor and analyze attacker or red team behaviors. Designed for cybersecurity training, cyber defense exercises, Capture the Flag (CTF) challenges, and hands-on attack/defense competitions, this PLC honeypot provides a realistic and interactive platform for advancing OT cybersecurity skills and strategies.
 
 ```
 # Created:     2024/10/28
@@ -19,19 +21,10 @@
 
 ### Introduction
 
+The Python PLC Honey Pot Project is a distributed system designed to mimic the behavior of real SCADA network control flow between the PLC and HMI, luring potential attackers into interacting with it. This helps in studying attack methods, preventing unauthorized access, and improving security measures in industrial environments. The system includes 2 main isolated network, the OT honey port network and the Orchestration network. 
 
-
-
-
-#### Network Design 
-
-
-
-
-
-
-
-
+- **OT honey port network** : The network open of the red teaming attacker to implement the penetration, scanning and attack, the OT protocol communication between the PLC emulator and OT controller simulator are in this network. The PLC config http(s) interface are also open for this network. 
+- **Orchestration network** : The network only open for the blue team to monitor the whole system, all the PLC and controller's report will be in this network to send to the system monitor hub program. The log archive data flow are also go though in this network. 
 
 
 
