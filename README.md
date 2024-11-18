@@ -26,14 +26,6 @@ The Python PLC Honey Pot Project is a distributed system designed to mimic the b
 - **OT honey port network** : The network open of the red teaming attacker to implement the penetration, scanning and attack, the OT protocol communication between the PLC emulator and OT controller simulator are in this network. The PLC config http(s) interface are also open for this network. 
 - **Orchestration network** : The network only open for the blue team to monitor the whole system, all the PLC and controller's report will be in this network to send to the system monitor hub program. The log archive data flow are also go though in this network. 
 
-
-
-
-
-
-
-
-
 We want to create a python PLC honey pot system with below features:
 
 ### 1. **PLC Emulator**

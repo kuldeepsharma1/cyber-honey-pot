@@ -2,9 +2,9 @@
 # Name:        mbPlcControllerApp.py
 #
 # Purpose:     This module is the controller program start a Modbus-TCP PLC 
-#              client to connect to the PLC to set the holding register and 
-#              read the coil status. It also provide a UDP service for people 
-#              to read the PLC state.
+#              client to connect to the PLC simulator to do the PLC control 
+#              and result verification. Then report the state to the monitor
+#              hub.
 #              
 # Author:      Yuancheng Liu
 #
@@ -15,7 +15,6 @@
 #-----------------------------------------------------------------------------
 
 import time
-import threading
 from random import randint
 
 import mbPlcControllerGlobal as gv
