@@ -20,7 +20,7 @@ PLC_IP:127.0.0.1
 PLC_PORT:502
 
 # PLC data fetch time interval (sec)
-PLC_CINT:2
+PLC_CINT:10
 
 #-----------------------------------------------------------------------------
 # define the monitor hub parameters : 

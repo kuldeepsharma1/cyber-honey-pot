@@ -11,7 +11,7 @@
 # Author:      Yuancheng Liu
 #
 # Created:     2024/11/01
-# version:     v0.1.1
+# version:     v_0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
@@ -22,7 +22,7 @@ import modbusTcpCom
 
 #-----------------------------------------------------------------------------
 class ladderLogic(modbusTcpCom.ladderLogic):
-    """ A test ladder logic program with 8 holding register and 2 level ladder
+    """ A test ladder logic program with 8 holding register and 1 level ladder
         logic to set the 8 output coils. To use this ladder logic in plc emulator,
         call the addLadderLogic() function of modbusTcpCom.plcDataHandler. 
     """
@@ -67,5 +67,5 @@ class ladderLogic(modbusTcpCom.ladderLogic):
         # rung 6: HR3 or (not HR7) -> Q6
         c6 = regsList[3] or (not regsList[7])
         # rung 7: HR5 -> Q7
-        c7 = regsList[5]
+        c7 = not regsList[5]
         return [c0, c1, c2, c3, c4, c5, c6, c7]
