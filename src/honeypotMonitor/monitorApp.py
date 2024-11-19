@@ -1,22 +1,21 @@
 #!/usr/bin/python
 #-----------------------------------------------------------------------------
-# Name:        modbusPlcApp.py [python3]
+# Name:        monitorApp.py [python3]
 #
-# Purpose:     This module is the main App execution file of the modbus-TCP PLC 
-#              emulator of the honeypot project. It provide the modbus-TCP interface 
-#              for handling the OT control request and a web interface for PLC 
-#              configuration change.
+# Purpose:     This module is the main App execution file of PLC honeypot system
+#              monitor web server which provide the visualization dashboard to 
+#              show the working state of each subsystem and components.
 #
 # Author:      Yuancheng Liu
 #
 # Created:     2024/10/21
-# version:     v0.0.1
+# version:     v_0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
 
 from datetime import timedelta 
-from flask import Flask, render_template, flash, redirect, url_for, jsonify, request
+from flask import Flask, render_template, jsonify, request
 
 import monitorGlobal as gv
 import monitorDataMgr as dataMgr
@@ -47,9 +46,8 @@ def index():
 #-----------------------------------------------------------------------------
 @app.route('/controllerview')
 def controllerview():
-    """ route to the ladder logic page."""
+    """ route to PLC controllers subsystem view page."""
     infoList = gv.iDataMgr.getAllControllerState()
-    print(infoList)
     posts = {'page': 1,
              'controllerinfo': infoList
              }
@@ -58,7 +56,7 @@ def controllerview():
 #-----------------------------------------------------------------------------
 @app.route('/plcemuview')
 def plcemuview():
-    """ route to the ladder logic page."""
+    """ route to PLC emulators subsystem view page."""
     infoList = gv.iDataMgr.getAllPlcState()
     posts = {'page': 2,
              'plcinfo': infoList
@@ -68,37 +66,32 @@ def plcemuview():
 #-----------------------------------------------------------------------------
 @app.route('/plc/<string:postID>')
 def plcpeerstate(postID):
+    """ route to the individual PLC emulator state page."""
     plcInfo = gv.iDataMgr.getPlcState(postID)
-    posts = {
-        'plcinfo': plcInfo,
-    }
+    posts = { 'plcinfo': plcInfo}
     reportDict = gv.iDataMgr.getPlcReport(postID)
-    if reportDict is not None:
-        posts.update(reportDict)
-    return render_template('plcpeerstate.html',posts=posts)
+    if reportDict is not None: posts.update(reportDict)
+    return render_template('plcpeerstate.html', posts=posts)
 
 #-----------------------------------------------------------------------------
 @app.route('/controller/<string:postID>')
 def ctrlpeerstate(postID):
+    """ route to the individual PLC controller state page."""
     controllerInfo = gv.iDataMgr.getControllerState(postID)
-    posts = {
-        'controllerinfo': controllerInfo,
-    }
+    posts = {'controllerinfo': controllerInfo}
     reportDict = gv.iDataMgr.getControllerReport(postID)
-    if reportDict is not None:
-        posts.update(reportDict)
-    return render_template('ctrlpeerstate.html',posts=posts)
+    if reportDict is not None: posts.update(reportDict)
+    return render_template('ctrlpeerstate.html', posts=posts)
 
 #-----------------------------------------------------------------------------
 @app.route('/dataPost', methods=('POST',))
 def dataPost():
-    """ Handle program data submittion request.
+    """ Handle PLC emulator and controller data report request.
         API call example:
-        requests.post(http://%s:%s/dataPost/<devID>, json={})
+            requests.post(http://%s:%s/dataPost/<devID>, json={})
     """
     content = request.json
-    #gv.gDebugPrint("Get raw data from %s " %str(devID), logType=gv.LOG_INFO)
-    gv.gDebugPrint("Raw Data: %s" % str(content),prt=True, logType=gv.LOG_INFO)
+    gv.gDebugPrint("Raw Data: %s" % str(content), prt=True, logType=gv.LOG_INFO)
     result = gv.iDataMgr.handleRequest(content) if gv.iDataMgr else {"ok": True}
     return jsonify(result)
 

@@ -21,7 +21,6 @@ For good coding practice, follow the below naming convention:
 
 import os
 import sys
-import json
 
 print("Current working directory is : %s" % os.getcwd())
 DIR_PATH = dirpath = os.path.dirname(os.path.abspath(__file__))
@@ -76,8 +75,9 @@ APP_SEC_KEY = 'secrete-key-goes-here'
 UPDATE_PERIODIC = 15
 COOKIE_TIME = 30
 
-gTimeOut = 30
-
+#-----------------------------------------------------------------------------
+# Init the global value
+gTimeOut = 30 # online state time out
 
 # Flask App parameters : 
 gflaskHost = '0.0.0.0'
@@ -89,4 +89,3 @@ gflaskMultiTH =  CONFIG_DICT['FLASK_MULTI_TH']
 # Init the global instances
 iPlcLadderLogic = None
 iDataMgr = None
-iUserMgr = None

@@ -1,22 +1,16 @@
 {% extends 'mgmbase.html' %}
-
 {% block title %} Logic Controller - Modicon M221 {% endblock %}
-
 {% block style%} <style></style> {% endblock %}
 
-
 {% block script %} 
-
 <script>
     var updateInterval = 2000; // Update interval in milliseconds
     // Function to auto-refresh the page
     function timedRefresh(timeoutPeriod) {
         setTimeout("location.reload(true);",timeoutPeriod);
     }
-    
     window.onload = timedRefresh(updateInterval); // refresh every 2 sec.
 </script>
-
 {% endblock %}
 
 {% block mgmContent %}
@@ -109,7 +103,6 @@
                     </tbody>
                   </table>
             </li>
-
         </div>
     </div>
 </ul>

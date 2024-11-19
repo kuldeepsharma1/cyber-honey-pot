@@ -1,6 +1,6 @@
 {% extends 'mgmbase.html' %}
 
-{% block title %} PLC Controller View Page{% endblock %}
+{% block title %} PLC Controller State View Page{% endblock %}
 
 {% block style%} <style></style> {% endblock %}
 
@@ -10,20 +10,17 @@
 
 {% block mgmContent %}
 
-
 <ul class="list-group">
-
     <li class="list-group-item">
         <h3> PLC Controllers State View </h3>
     </li>
-
 </ul>
 
 <div class="row">
     <div class="col-sm-9">
         <ul class="list-group">
             <li class="list-group-item">
-                <h5>Controller State Table </h5>
+                <h5> Controller State Table </h5>
             </li>
             <li class="list-group-item">
                 <table class="table table-bordered table-sm">
@@ -141,6 +138,5 @@
         </ul>
     </div>
 </div>
-
 
 {% endblock %}
