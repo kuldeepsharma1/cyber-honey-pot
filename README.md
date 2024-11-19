@@ -21,11 +21,11 @@ As a cybersecurity honeypot, this project will detect unauthorized access attemp
 
 ### Introduction
 
-The Python PLC Honey Pot Project is a distributed system designed to mimic the behavior of real SCADA network control flow between the PLC and HMI, luring potential red team attackers into interacting with it. This helps in studying attack methods, DFIR data set collection, preventing unauthorized access, and improving security measures in industrial environments for the blue team defenders. The system includes below three subsystem:
+The Python PLC Honeypot Project is a distributed cybersecurity solution designed to mimic the behavior of real SCADA network control flows between Programable Logic Controllers (PLCs) and Human-Machine Interfaces (HMIs), the honey pot is a full digital equivalent VM based system without any special OT-hardware. This system lures potential red team attackers into engaging with a simulated OT (Operational Technology) environment, enabling the collection of attack data, Digital Forensics and Incident Response (DFIR) datasets, and supporting the development of enhanced security measures. It also provides a platform for blue team defenders to monitor, analyze, and respond to cyber threats in industrial environments. The system is divided into three main subsystems:
 
-- **PLC emulators sub system**:  Schneider Modicon M22X (Modbus-TCP) simulators and Siemens-S712xx (S7Comm) simulator which can handler the related OT control request and run the ladder logic. 
-- **PLC Controllers sub system** :  PLC remote controller programs simulate the 1 to 1, 1 to N, or N to N HMI-PLC control workflow in OT environment and report the verification state to monitor system. 
-- **Honeypot monitor sub system** : Orchestrator Hub to collect and process all the PLC emulator report, controller report, VM and network archived log files to create the honeypot situation visualization, alerting and notification. 
+- **PLC Emulators Subsystem**: The subsystem includes multiple `PLC_Emulation_VM`s to simulate Schneider Modicon M22X (Modbus-TCP) and Siemens S712xx (S7Comm) PLCs, capable of handling OT control requests and executing ladder logic to replicate realistic PLC behaviors. 
+- **PLC Controllers Subsystem**: The subsystem includes multiple `PLC_Contoller_VM`s to mimics various control workflows (1-to-1, 1-to-N, and N-to-N HMI-PLC interactions) in OT environments, validating control interactions and reporting verification states to the monitoring system.
+- **Honeypot Monitor Subsystem**: The subsystem includes one `Monitor_Hub_VM` and one `Log_Archive_Database_VM` to aggregate and process reports from PLC emulators, controllers, and network logs. It provides visualization, alerts, and notifications to defenders via different web based interactive dashboard.
 
 The system structure and workflow diagram is shown below:
 
