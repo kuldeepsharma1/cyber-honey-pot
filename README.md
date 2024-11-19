@@ -6,10 +6,6 @@
 
 As a cybersecurity honeypot, this project will detect unauthorized access attempts on PLCs, including attempts to log in to PLC configuration pages via HTTP/HTTPS, and will monitor for possible attack scenario such as Denial of Service (DoS),  False Command Injection (FCI) and False Data Injection (FDI) attacks. The system will log and display real-time data on system execution states, enabling defenders or blue teams to monitor and analyze attacker or red team behaviors. Designed for cybersecurity training, cyber defense exercises, Capture the Flag (CTF) challenges, and hands-on attack/defense competitions, this PLC honeypot provides a realistic and interactive platform for advancing OT cybersecurity skills and strategies.
 
-The system structure and workflow diagram is shown below:
-
-![](doc/img/title.png)
-
 ```
 # Created:     2024/10/28
 # Version:     v_0.0.1
@@ -25,7 +21,17 @@ The system structure and workflow diagram is shown below:
 
 ### Introduction
 
-The Python PLC Honey Pot Project is a distributed system designed to mimic the behavior of real SCADA network control flow between the PLC and HMI, luring potential attackers into interacting with it. This helps in studying attack methods, preventing unauthorized access, and improving security measures in industrial environments. The system includes 2 main isolated network, the OT honey port network and the Orchestration network. 
+The Python PLC Honey Pot Project is a distributed system designed to mimic the behavior of real SCADA network control flow between the PLC and HMI, luring potential red team attackers into interacting with it. This helps in studying attack methods, DFIR data set collection, preventing unauthorized access, and improving security measures in industrial environments for the blue team defenders. The system includes below subsystem:
+
+- **PLC emulators**:  Schneider Modicon M22X (Modbus-TCP) simulators and Siemens-S712xx (S7Comm) simulator which can handler the related OT control request and run the ladder logic. 
+- **PLC Controller sub system** :  PLC remote controller programs simulate the 1 to 1, 1 to N, or N to N HMI-PLC control workflow in OT environment and report the verification state to monitor system. 
+- **Honeypot monitor sub system** : Orchestrator Hub to collect and process all the PLC emulator report, controller report, VM and network archived log files to create the honeypot situation visualization, alerting and notification. 
+
+The system structure and workflow diagram is shown below:
+
+![](doc/img/Title.png)
+
+The system includes 2 main isolated network, the OT honey port network and the Orchestration network. 
 
 - **OT honey port network** : The network open of the red teaming attacker to implement the penetration, scanning and attack, the OT protocol communication between the PLC emulator and OT controller simulator are in this network. The PLC config http(s) interface are also open for this network. 
 - **Orchestration network** : The network only open for the blue team to monitor the whole system, all the PLC and controller's report will be in this network to send to the system monitor hub program. The log archive data flow are also go though in this network. 
