@@ -15,7 +15,7 @@
 # License:     MIT License    
 #-----------------------------------------------------------------------------
 
-from datetime import timedelta 
+from datetime import timedelta, datetime
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_login import LoginManager, login_required
 
@@ -69,7 +69,10 @@ app = createApp()
 @app.route('/index')
 def index():
     """ route to introduction index page."""
-    posts = {'page': 0}  # page index is used to highlight the left page slide bar.
+    posts = {'page': 0,
+             'ipaddress': gv.gOwnIP,
+             'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+             }  # page index is used to highlight the left page slide bar.
     return render_template('index.html', posts=posts)
     
 #-----------------------------------------------------------------------------
@@ -77,7 +80,8 @@ def index():
 @login_required
 def plcstate():
     """ route to the ladder logic page."""
-    posts = {'page': 1}
+    posts = {'page': 1,
+             }
     stateData = gv.iPlcDataMgr.getPlcStateDict()
     posts.update(stateData)
     return render_template('plcstate.html', posts=posts)
