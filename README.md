@@ -31,10 +31,12 @@ The system structure and workflow diagram is shown below:
 
 ![](doc/img/Title.png)
 
-The system includes 2 main isolated network, the OT honey port network and the Orchestration network. 
+The system operates across two isolated networks:
 
-- **OT honey port network** : The network open of the red teaming attacker to implement the penetration, scanning and attack, the OT protocol communication between the PLC emulator and OT controller simulator are in this network. The PLC config http(s) interface are also open for this network. 
-- **Orchestration network** : The network only open for the blue team defenders to monitor the whole system, all the PLC and controller's report will be in this network to send to the system monitor hub program. The log archive data flow are also go though in this network. 
+- **OT Honeypot Network**: Open to red team attackers for penetration testing, scanning, and OT protocol-based attacks. This network includes OT protocol communication between PLC emulators and controller simulators and provides access to PLC configuration interfaces via HTTP/HTTPS.
+- **Orchestration Network**: Restricted to blue team defenders, this network centralizes monitoring, reporting, and log data archival. It also facilitates data flow between system components and the monitoring hub.
+
+
 
 The PLC honey port System include below eight main features:
 

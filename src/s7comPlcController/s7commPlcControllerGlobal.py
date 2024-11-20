@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Name:        mbPlcControllerGlobal.py
+# Name:        s7commPlcControllerGlobal.py
 #
 # Purpose:     This module is used as a project global config file to set the 
 #              constants, parameters and instances which will be used in the 

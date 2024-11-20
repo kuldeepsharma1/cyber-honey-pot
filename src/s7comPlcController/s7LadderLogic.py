@@ -3,15 +3,15 @@
 # Name:        s7LadderLogic.py
 #
 # Purpose:     This module is the PLC ladder logic simulation module example for 
-#              the PLC emulator. Both the PLC emulator and controller will run the 
+#              the s7CommPLC emulator. Both the PLC emulator and controller will run the 
 #              same ladder logic at the same time. This module inherits from the 
 #              <lib/modbusTcpCom.py>'s ladderLogic class. If you want to build your 
 #              own ladder logic, you can copy this module and modify it.
 #  
 # Author:      Yuancheng Liu
 #
-# Created:     2024/11/01
-# version:     v0.1.1
+# Created:     2024/11/08
+# version:     v0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
@@ -20,17 +20,31 @@
 import s7commPlcControllerGlobal as gv 
 import snap7Comm
 
-
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class ladderLogic(snap7Comm.rtuLadderLogic):
 
+    """ A test ladder logic program with take 8 bool input data in 2 memory and run a 
+        1 level ladder logic then set 8 output data in another 2 memory address. To use 
+        this ladder logic in plc emulator, call the self.server.startService(eventHandlerFun=handlerS7request)
+        in the plc or the runVerifyLadderLogic() in the controller.
+    """
     def __init__(self, parent, nameStr):
         super().__init__(parent, ladderName=nameStr)
 
+    #-----------------------------------------------------------------------------
     def initLadderInfo(self):
+        # Init the input data saving memory address and data index
         self.srcAddrValInfo = {'addressIdx': (1, 2), 'dataIdx': (0, 2, 4, 6)}
+        # init the output data saving memory address and data index
         self.destAddrValInfo = {'addressIdx': (3, 4), 'dataIdx': (0, 2, 4, 6)}
 
+    #-----------------------------------------------------------------------------
     def runLadderLogic(self, inputData=None):
+        """ Execute the ladder logic with the input memory address data list and set 
+            the output address data list. In this example, there will be 8 rungs to 
+            be executed.
+        """
         print(" - runLadderLogic")
         addr, dataIdx, datalen = inputData
         print("Received data write request: ")
@@ -80,11 +94,12 @@ class ladderLogic(snap7Comm.rtuLadderLogic):
             c6 = ms3 or not ms7
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                      self.destAddrValInfo['dataIdx'][2], c6)
-            # rung 7: not ms5 -> ds7
-            c7 = not ms5
+            # rung 7: ms5 -> ds7
+            c7 =  ms5
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                      self.destAddrValInfo['dataIdx'][3], c7)
 
+    #-----------------------------------------------------------------------------
     def runVerifyLadderLogic(self, regsList):
         """ Execute the ladder logic with the input holding register list and set 
             the output coils. In this example, there will be 8 rungs to be executed.
@@ -106,5 +121,5 @@ class ladderLogic(snap7Comm.rtuLadderLogic):
         # rung 6: HR3 or (not HR7) -> Q6
         c6 = regsList[3] or (not regsList[7])
         # rung 7: HR5 -> Q7
-        c7 = not regsList[5]
+        c7 = regsList[5]
         return [c0, c1, c2, c3, c4, c5, c6, c7]

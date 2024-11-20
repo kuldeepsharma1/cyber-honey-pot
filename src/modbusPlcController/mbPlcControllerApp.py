@@ -45,7 +45,7 @@ class plcControllerApp(object):
                                                         reportInterval=gv.gReportInv)
         gv.iMonitorClient.setParentInfo(gv.gOwnID, gv.gOwnIP, monitorClient.CTRL_TYPE, gv.gProType,
                                         tgtID=gv.gPlcID, tgtIP=gv.gPlcIP, ladderID=gv.gLadderID)
-        # Init the PLC client
+        # Init the PLC Modbus-TCP client
         self.modbusClient = modbusTcpCom.modbusTcpClient(gv.gPlcIP, tgtPort=gv.gPlcPort)
         self.ladderLogic = ladderLogic(None)
         self.terminate = False
@@ -57,6 +57,7 @@ class plcControllerApp(object):
             time.sleep(1)
         gv.iMonitorClient.logintoMonitor()
         gv.iMonitorClient.start()
+        gv.gDebugPrint("PLC connection established", logType=gv.LOG_INFO)
 
     #-----------------------------------------------------------------------------
     def startClient(self):

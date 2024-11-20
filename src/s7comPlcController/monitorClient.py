@@ -2,13 +2,13 @@
 #-----------------------------------------------------------------------------
 # Name:        monitorClient.py
 #
-# Purpose:     The client module to report honeypot PLC emulator state to the 
-#              monitor hub. 
+# Purpose:     The client module used to report honeypot PLC emulator and controller
+#              state to the monitor hub. 
 #  
 # Author:      Yuancheng Liu
 #
 # Created:     2024/11/02
-# version:     v0.0.1
+# version:     v0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License
 #-----------------------------------------------------------------------------
@@ -20,13 +20,14 @@ import threading
 from datetime import datetime
 from queue import Queue
 
-MAX_RTP_NUM = 10    # Default report C2 server time interval(sec)
+MAX_RTP_NUM = 10    # Max number of report can be stored in the queue.
 
+# report type constants
 RPT_NORMAL = 'normal'
 RPT_WARN = 'warning'
 RPT_ALERT = 'alert'
 RPT_LOGIN = 'login'
-
+# client ype constants
 PLC_TYPE='plc'
 CTRL_TYPE='controller'
 
@@ -56,6 +57,7 @@ class monitorClient(threading.Thread):
     def addReportDict(self, actionType, reportMsg):
         """ Add the report message to the queue.
             Args:
+                actionType(str): one of the report type constants
                 msgDict (dict): report message dict.
         """
         if self.reportQueue.full(): self.reportQueue.get()
@@ -91,9 +93,7 @@ class monitorClient(threading.Thread):
     #-----------------------------------------------------------------------------
     def logintoMonitor(self):
         """ Login to the monitor hub when the program start."""
-        data = copy.deepcopy(self.parentInfoDict)
-        action = RPT_LOGIN
-        self.report2Monitor(action, data)
+        self.report2Monitor(RPT_LOGIN, copy.deepcopy(self.parentInfoDict))
 
     #-----------------------------------------------------------------------------
     def report2Monitor(self, action, data):

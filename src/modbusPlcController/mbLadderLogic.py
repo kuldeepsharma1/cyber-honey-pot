@@ -21,6 +21,7 @@ import mbPlcControllerGlobal as gv
 import modbusTcpCom
 
 #-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class ladderLogic(modbusTcpCom.ladderLogic):
     """ A test ladder logic program with 8 holding register and 1 level ladder
         logic to set the 8 output coils. To use this ladder logic in plc emulator,
