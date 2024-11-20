@@ -22,7 +22,6 @@
             </li>
         {% endif%}
 
-
         <li class="list-group-item">   
             <div class="list-group">
                 <a href="{{ url_for('index')}}" class="list-group-item list-group-item-action {% if posts['page'] == 0 %} bg-primary {% endif %}">
@@ -34,20 +33,20 @@
         {% if current_user.is_authenticated %}
         <li class="list-group-item">
             <div class="list-group">
-                <a href="{{ url_for('plcstate')}}" class="list-group-item list-group-item-action {% if posts['page'] == 1 %} bg-success {% endif %}"> 
+                <a href="{{ url_for('plcstate')}}" class="list-group-item list-group-item-action {% if posts['page'] == 1 %} bg-primary {% endif %}"> 
                     <b class="{% if posts['page'] == 1 %} text-white {% endif %} "> PLC State </b>
                 </a>
             </div>
 
             <div class="list-group">
-                <a href="{{ url_for('configuration')}}" class="list-group-item list-group-item-action {% if posts['page'] == 2 %} bg-success {% endif %}"> 
+                <a href="{{ url_for('configuration')}}" class="list-group-item list-group-item-action {% if posts['page'] == 2 %} bg-primary {% endif %}"> 
                     <b class="{% if posts['page'] == 2 %} text-white {% endif %} "> Access Configuration </b>
                 </a>
             </div>
 
             {% if current_user.name=='admin'%}
                 <div class="list-group">
-                    <a href="{{ url_for('accmgmt')}}" class="list-group-item list-group-item-action {% if posts['page'] == 3 %} bg-success {% endif %}"> 
+                    <a href="{{ url_for('accmgmt')}}" class="list-group-item list-group-item-action {% if posts['page'] == 3 %} bg-primary {% endif %}"> 
                         <b class="{% if posts['page'] == 3 %} text-white {% endif %} "> User Configuration </b>
                     </a>
                 </div>

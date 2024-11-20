@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #-----------------------------------------------------------------------------
-# Name:        modbusPlcApp.py
+# Name:        s7commPlcApp.py
 #
 # Purpose:     This module is the main App execution file of the modbus-TCP PLC 
 #              emulator of the honeypot project. It provide the modbus-TCP interface 
