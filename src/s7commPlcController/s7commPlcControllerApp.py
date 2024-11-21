@@ -71,8 +71,7 @@ class plcControllerApp(object):
             randomVals = [randint(0, 1) for i in range(8)]
             regVals = [i == 1 for i in randomVals]
             gv.gDebugPrint("Random generate input: %s" %str(regVals), logType=gv.LOG_INFO)
-            result = self.ladderLogic.runVerifyLadderLogic(regVals)
-            resultExp = [i == 1 for i in result]
+            resultExp = self.ladderLogic.runVerifyLadderLogic(regVals)
             gv.gDebugPrint("Expected output: %s" %str(resultExp), logType=gv.LOG_INFO)
             self.s7commClient.setAddressVal(1, 0, regVals[0], dataType=snap7Comm.BOOL_TYPE)
             time.sleep(0.1)
@@ -92,9 +91,9 @@ class plcControllerApp(object):
             time.sleep(0.1)
             time.sleep(1)
             # get PLC result
-            val1 = self.s7commClient.readAddressVal(3, dataIdxList=(0,2,4,6), 
+            val1 = self.s7commClient.readAddressVal(3, dataIdxList=(0, 2, 4, 6),
                                                     dataTypeList=(BOOL_TYPE, BOOL_TYPE, BOOL_TYPE, BOOL_TYPE))
-            val2 = self.s7commClient.readAddressVal(4, dataIdxList=(0,2,4,6), 
+            val2 = self.s7commClient.readAddressVal(4, dataIdxList=(0, 2, 4, 6),
                                                     dataTypeList=(BOOL_TYPE, BOOL_TYPE, BOOL_TYPE, BOOL_TYPE))
             # set connection state
             connectionRst = False if val1 is None or val2 is None else True
@@ -109,7 +108,7 @@ class plcControllerApp(object):
             if not matchRst:
                 gv.iMonitorClient.addReportDict(monitorClient.RPT_ALERT, 
                                                 "alert:PLC output not match with expected")
-                gv.gDebugPrint("PLC output not match with expected")
+                gv.gDebugPrint("Err:PLC output not match with expected")
                 continue
             #self.dataManager.setCoilState(matchRst, resultGet)
             gv.iMonitorClient.addReportDict(monitorClient.RPT_NORMAL, "PLC Control Loop Normal")

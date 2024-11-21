@@ -52,7 +52,7 @@
                             {% else %}
                                 <td><span class="badge bg-dark"> 0 V </span></td>
                             {% endif%}
-                            <td>B{{loop.index0 % 4}}</td>
+                            <td>B-{{loop.index0 % 4}}</td>
                             {% if regVal %}
                                 <td><span class="badge bg-success"> True</span></td>
                             {% else %}
@@ -68,7 +68,7 @@
         <div class="col-sm-6">
 
             <li class="list-group-item">   
-                <b class="text-success">PLC Ladder Diagram</b> 
+                <b class="text-primary">PLC Ladder Diagram</b> 
                 <p> </p>
                 <img src="{{url_for('static', filename='img/mbLadderLogic.png')}}" class="rounded img-fluid">
             </li>
@@ -92,13 +92,13 @@
                     <tbody>
                         {% for coilVal in posts["coilVal"] %}
                         <tr>
-                            <td>%Q0.{{loop.index0}}</td>
+                            <td><span class="badge bg-secondary">0x0000000{{loop.index0//4+3}}</span></td>
                             {% if coilVal%}
                                 <td><span class="badge bg-success">{{coilVal}}</span></td>
                             {% else %}
                                 <td><span class="badge bg-warning">{{coilVal}}</span></td>
                             {% endif%}
-                            <td>%O0.{{loop.index0}}</td>
+                            <td>B-{{loop.index0 % 4}}</td>
                             {% if coilVal%}
                                 <td><span class="badge bg-success">{{posts["outputVol"][loop.index0]}} V</span></td>
                             {% else %}

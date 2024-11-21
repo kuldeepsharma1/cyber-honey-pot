@@ -1,4 +1,4 @@
-echo "Running Railway Trains Power Control PLC Program [rtuSimulatorTrain.py]"
+echo "Running S7comm PLC emulator [s7commPlcApp.py]"
 @echo off
 call workon vEnv3.8
 

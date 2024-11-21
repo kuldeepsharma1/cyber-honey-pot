@@ -86,8 +86,8 @@ class ladderLogic(snap7Comm.rtuLadderLogic):
             c4 = not(ms4 or ms5)
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                     self.destAddrValInfo['dataIdx'][0], c4)
-            # rung 5: not ms0 or ms6 -> ds5
-            c5 = (not ms0) or ms6
+            # rung 5: not ms0 and ms6 -> ds5
+            c5 = (not ms0) and ms6
             self.parent.setMemoryVal(self.destAddrValInfo['addressIdx'][1],
                                      self.destAddrValInfo['dataIdx'][1], c5)
             # rung 6: ms3 or not ms7 -> ds6

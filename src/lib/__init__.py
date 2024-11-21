@@ -21,18 +21,21 @@ Description:
 - provide the module used for the infra monitor hub's frontend web host and the 
 backend data base handler .
 
-Modules inclided in the current package: 
+Modules included in the current package: 
 
 1. ConfigLoader: 
 provide API to load the not stand text format config file's data.
 
 2. Log.py: 
-provide the addtional log function to do the program execution log archiving feature.
+provide the additional log function to do the program execution log archiving feature.
 
 3.modbusTcpCom.py:
 provide the modbus TCP communication function to read/write the data from/to the PLC
 
-4.udpCom.py:
-provide the UDP communication function to read/write the data from/to the Controller.
+4.snap7Comm.py:
+provide the s7comm communication function to read/write the data from/to the PLC
 
+5.ftpComm.py:
+provide the ftp communication function to synchronize the log file from every components
+not to the archive server.
 """
