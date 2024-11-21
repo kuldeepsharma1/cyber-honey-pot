@@ -2,15 +2,15 @@
 #-----------------------------------------------------------------------------
 # Name:        s7commPlcApp.py
 #
-# Purpose:     This module is the main App execution file of the modbus-TCP PLC 
-#              emulator of the honeypot project. It provide the modbus-TCP interface 
+# Purpose:     This module is the main App execution file of the S7Comm PLC 
+#              emulator of the honeypot project. It provide the  S7Comm interface 
 #              for handling the OT control request and a web interface for PLC 
 #              configuration change.
 #
 # Author:      Yuancheng Liu
 #
 # Created:     2024/10/21
-# version:     v0.1.1
+# version:     v_0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
@@ -81,80 +81,11 @@ def index():
 def plcstate():
     """ route to the ladder logic page."""
     posts = {'page': 1,
+             'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
              }
     stateData = gv.iPlcDataMgr.getPlcStateDict()
     posts.update(stateData)
     return render_template('plcstate.html', posts=posts)
-
-#-----------------------------------------------------------------------------
-@app.route('/configuration')
-@login_required
-def configuration():
-    """ route to the configuration page."""
-    posts = {
-                'defaultRip': gv.ALLOW_R_L,
-                'defaultWip': gv.ALLOW_W_L,
-                'currentRip': gv.iPlcDataMgr.getAllowRipList(),
-                'currentWip': gv.iPlcDataMgr.getAllowWipList(),
-                'page': 2
-            }
-    return render_template('configuration.html', posts=posts)
-
-#-----------------------------------------------------------------------------
-@app.route('/resetAllowReadIp', methods = ['POST', 'GET'])
-@login_required
-def resetAllowReadIp():
-    """"Rest all allow read IPs to config file setting from the web UI"""
-    rst = gv.iPlcDataMgr.resetAllowRipList()
-    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to reset the allow read IP list.")
-    if rst:
-        flash("Rest the allow read IP list success!")
-    else: 
-        flash("Rest the allow read IP list failed!")
-    return redirect(url_for('configuration'))
-
-#-----------------------------------------------------------------------------
-@app.route('/addAllowReadIp', methods = ['POST', 'GET'])
-@login_required
-def addAllowReadIp():
-    """Add one allow read IP from the web UI"""
-    if request.method == 'POST':
-        ipstr = str(request.form['newIp'])
-        rst = gv.iPlcDataMgr.addAllowReadIp(ipstr)
-        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to add IP %s in the allow read IP list." %ipstr)
-        if rst:
-            flash("New ip %s is added in the all read ip address list" %str(ipstr))
-        else: 
-            flash("Input IP format incorrect.")
-    return redirect(url_for('configuration'))
-
-#-----------------------------------------------------------------------------
-@app.route('/resetAllowWriteIp', methods = ['POST', 'GET'])
-@login_required
-def resetAllowWriteIp():
-    """"Rest all allow write IPs to config file setting from the web UI"""
-    rst = gv.iPlcDataMgr.resetAllowWipList()
-    if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to reset the allow write IP list.")
-    if rst:
-        flash("Rest the allow write IP list success!")
-    else: 
-        flash("Rest the allow write IP list failed!")
-    return redirect(url_for('configuration'))
-
-#-----------------------------------------------------------------------------
-@app.route('/addAllowWriteIp', methods = ['POST', 'GET'])
-@login_required
-def addAllowWriteIp():
-    """Add one allow write IP from the web UI"""
-    if request.method == 'POST':
-        ipstr = str(request.form['newIp'])
-        rst = gv.iPlcDataMgr.addAllowWriteIp(ipstr)
-        if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "User try to add IP %s in the allow write IP list." %ipstr)
-        if rst:
-            flash("New ip %s is added in the all write ip address list" %str(ipstr))
-        else: 
-            flash("Input IP format incorrect.")
-    return redirect(url_for('configuration'))
 
 # -----------------------------------------------------------------------------
 # page 3 admin user account's request handling function.
@@ -162,7 +93,8 @@ def addAllowWriteIp():
 @login_required
 def accmgmt():
     posts = {'page': 3,
-             'users': gv.iUserMgr.getUserInfo()
+             'users': gv.iUserMgr.getUserInfo(),
+             'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
     return render_template('accmgmt.html', posts=posts)
 

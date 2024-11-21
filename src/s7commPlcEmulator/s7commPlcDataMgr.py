@@ -2,11 +2,11 @@
 #-----------------------------------------------------------------------------
 # Name:        s7commPlcDataMgr.py 
 #
-# Purpose:     This module is the data management module to init the Modbus-TCP 
+# Purpose:     This module is the data management module to init the S7comm
 #              server, Plc internal registers, coils and the PLC ladder logic diagram.
-#              It will handle the Modbus request from the honeypot PLC controller, 
-#              read registers state (input), then calculate the ladder logic and 
-#              set the plc coils(output) in its every clock cycle.
+#              It will handle the S7Comm request from the honeypot PLC controller, 
+#              read memory address state (input), then calculate the ladder logic and 
+#              set the plc memory address (output) in its every clock cycle.
 #  
 # Author:      Yuancheng Liu
 #
@@ -75,12 +75,22 @@ class DataManager(threading.Thread):
             'coilVal':[],
             'outputVol':[]
         }
-        for val in self.getAllRegistersVal():
-            stateDict['registerVal'].append(val)
+        dataIdxList = (0, 2, 4, 6)
+        # added the input value and voltage
+        for idx in dataIdxList:
+            stateDict['registerVal'].append(self.server.getMemoryVal(1, idx))
+        for idx in dataIdxList:
+            stateDict['registerVal'].append(self.server.getMemoryVal(2, idx))
+        for val in stateDict['registerVal']:
             voltage = round(5 + random.uniform(-0.05, 0.05),2) if val else 0 
             stateDict['inputVol'].append(voltage)
-        for val in self.getAllCoilsVal():
-            stateDict['coilVal'].append(val)
-            voltage = 5 if val else 0
+        # added the output value and voltage
+        for idx in dataIdxList:
+            stateDict['coilVal'].append(self.server.getMemoryVal(3, idx))
+        for idx in dataIdxList:
+            stateDict['coilVal'].append(self.server.getMemoryVal(4, idx))
+        for val in stateDict['coilVal']:
+            voltage = round(5 + random.uniform(-0.05, 0.05),2) if val else 0 
             stateDict['outputVol'].append(voltage)
-        return stateDict
+        
+        return stateDict.copy()

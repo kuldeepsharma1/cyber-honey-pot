@@ -1,6 +1,6 @@
 {% extends 'mgmbase.html' %}
 
-{% block title %} Logic Controller - Modicon M221 {% endblock %}
+{% block title %} Logic Controller - Siemens S7-1200 {% endblock %}
 
 {% block style%} <style></style> {% endblock %}
 
@@ -24,7 +24,7 @@
 <ul class="list-group">
 
     <li class="list-group-item">
-        <h3> <b class="text-success"> PLC Contact and Coil State </b></h3>
+        <h3> <b class="text-primary"> PLC Address State </b></h3>
         <p> </p>
     </li>
     <br>
@@ -32,31 +32,31 @@
         <div class="col-sm-3">
 
             <li class="list-group-item">   
-                <b class="text-success">PLC Input Group</b> 
+                <b class="text-primary">PLC Input Group</b> 
                 <p> </p>
                 <table class="table table-bordered table-sm">
                     <thead class="table-dark">
                       <tr>
-                        <th>Contact</th>
+                        <th>Address</th>
                         <th>Voltage</th>
-                        <th>Register</th>
+                        <th>Byte_Idx</th>
                         <th>Value</th>
                       </tr>
                     </thead>
                     <tbody>
                         {% for regVal in posts["registerVal"] %}
                         <tr>
-                            <td>%I0.{{loop.index0}}</td>
-                            {% if regVal==1%}
+                            <td><span class="badge bg-secondary">0x0000000{{loop.index0//4+1}}</span></td>
+                            {% if regVal %}
                                 <td><span class="badge bg-success">{{posts["inputVol"][loop.index0]}} V</span></td>
                             {% else %}
                                 <td><span class="badge bg-dark"> 0 V </span></td>
                             {% endif%}
-                            <td>%HR0.{{loop.index0}}</td>
-                            {% if regVal==1%}
-                                <td><span class="badge bg-success">1</span></td>
+                            <td>B{{loop.index0 % 4}}</td>
+                            {% if regVal %}
+                                <td><span class="badge bg-success"> True</span></td>
                             {% else %}
-                                <td><span class="badge bg-warning"> 0 </span></td>
+                                <td><span class="badge bg-warning"> False </span></td>
                             {% endif%}
                         </tr>
                         {% endfor%}
@@ -78,15 +78,15 @@
         <div class="col-sm-3">
 
             <li class="list-group-item">   
-                <b class="text-success">PLC Output group</b> 
+                <b class="text-primary">PLC Output group</b> 
                 <p> </p>
                 <table class="table table-bordered table-sm">
                     <thead class="table-dark">
                       <tr>
-                        <th>Coil</th>
-                        <th>Value</th>
-                        <th>Output</th>
+                        <th>Address</th>
                         <th>Voltage</th>
+                        <th>Byte_Idx</th>
+                        <th>Value</th>
                       </tr>
                     </thead>
                     <tbody>

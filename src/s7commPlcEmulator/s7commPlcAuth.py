@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Name:        modbusPlcAuth.py
+# Name:        s7commPlcAuth.py
 #
 # Purpose:     PLC emulator's user authorization module used for check user login, 
 #              signup and logout.
@@ -7,7 +7,7 @@
 # Author:      Yuancheng Liu
 #
 # Created:     2024/11/03
-# version:     v0.1.1
+# version:     v_0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
 # License:     MIT License    
 #-----------------------------------------------------------------------------
