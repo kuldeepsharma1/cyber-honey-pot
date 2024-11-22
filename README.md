@@ -61,6 +61,83 @@ This section will show the design of each part of the sub system.
 
 #### Design of PLC Emulator
 
+The PLC Emulator will run on a VM or a physical machine with 2 programs (PLC Emulation Program and the Log archive agent) in the honey pot. The PLC simulation program will provide OT protocol simulations, ladder logic execution, and vendor-like PLC configuration interfaces. Emulates control logic to respond to OT requests, commands, simulating I/O operations and process control behaviors. The Log archive agent will use FTP to synchronize all the needed log of the Emulator to the log file server. The system diagram is shown below:
+
+![](doc/img/rm_s05.png)
+
+The PLC Emulation Program will start 4 sub parallel threads: 
+
+- **Flask Web Host Thread** : Host a web host to provide the deception PLC config web interface to lure attacker access and track all the attackers action. 
+- **Modbus and S7Comm Thread** : Start a Modbus-TCP server or a S7Comm server to handle the related OT request. 
+- **PLC Function thread** : The function module to manage the Register, coils and memory changes and execute the imported ladder logic. 
+- **Monitor Report thread** :  Regular report the PLC execution state, abnormal situation ( warning and alert ) to the honey port monitor hub. 
+
+The PLC Emulation Program will generate the access and configuration change log, the OT control log and system log, then save them in local storage, the Log archive client will filter the log and upload the log to honey port archive server. The Log archive client will start 2 sub parallel thread: 
+
+- **Log file management thread**: A file manager module to manage the log files in the local log storage to categorize, filter and record the new generated or modified or archived files. 
+- **Log synchronization thread**: A FTP client with a file synchronization queue to upload the new created file to the log data archive server.  
+
+
+
+#### Design Of PLC Controller
+
+For each PLC controller, it will start a OT protocol client thread to connect to the related PLC emulator (VM) based on the configuration. simulate the complex HMI-PLC control flow, user can run multiple PLC controller program in one VM and load in different PLC ladder logic to simulate the 1 to N or N to N or mixed SCADA system control scenario. The connection diagram is shown below:
+
+![](doc/img/rm_s06.png)
+
+After the controller initialized, it will load the exactly same Registers state, Coils state, memory config and Ladder logic module as its target PLC, then when the controller start one around control and verification, it will generate the random PLC register or coil or memory change setting, then pass the data to the PLC controller, then it will also simulate run the logic itself to get the calculated expected result `r0`, then it will fetch the PLC execution result `r1` from the PLC emulator. Then the controller will compare whether the `r0` and `r1` are same, if they are same, the controller will report normal to the monitor and wait for the next execution around, if different it will report warning to the monitor, if the controller detect the mismatch happens 3 time, it will report PLC has been attacked alert to the monitor. The verification workflow to detect a false command injection attack is shown below:
+
+```mermaid
+sequenceDiagram
+	participant Honeyport_Monitor
+    participant PLC_Contoller
+    participant PLC_Emulator
+    participant RedTeam_Attacker
+    PLC_Contoller-->PLC_Contoller:Load Ladderlogic-01
+    PLC_Emulator-->PLC_Emulator:Load Ladderlogic-01
+    PLC_Contoller-->PLC_Contoller:Generate PLC register value
+    PLC_Contoller->>PLC_Emulator:Send the register cahgne rquest
+    PLC_Contoller-->PLC_Contoller:Run ladderlogic-01 to get the expected result
+    PLC_Emulator-->PLC_Emulator:Run ladderlogic-01 and change the coil state 
+    RedTeam_Attacker->>PLC_Emulator:Send the PLC coil change command to PLC emulator
+    PLC_Emulator->>PLC_Contoller:Send the coil state back to controller
+    PLC_Contoller-->PLC_Contoller:Verfiy the expected data and PLC feed back data, result missmatch detected.
+    PLC_Contoller->>Honeyport_Monitor: report portential attack
+    
+```
+
+The Controller workflow is shown below:
+
+![](doc/img/rm_s07.png)
+
+The PLC Emulation Program will start 3 sub parallel threads: 
+
+- **OT Communication Thread**:  Login to the related target PLC(s) to send control request and read the feed back state. 
+- **Function thread**: Generate the control request data and verify the PLC execution result. 
+- **Monitor Report thread** :  Regular report the controller execution state, abnormal situation ( warning and alert ) to the honey port monitor hub. 
+
+Same as the PLC Emulator, each controller VM will run one log agent to send the log to the log archive server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
