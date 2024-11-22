@@ -120,9 +120,19 @@ Same as the PLC Emulator, each controller VM will run one log agent to send the 
 
 
 
+#### Deception Layer Design 
 
+For the OT deception layer for the attacker, as introduced in the PLC emulator and controller design, the system will provide the access limitation, data type verification, PLC permission IP white list function to mimic the real industrial environment. For the PLC emulator, we also provide the web PLC config interface which follow the same design and use the same port of the real PLC's web interface, so when the attack did the network IP and port scanning, they can access the config page which make them believe that they are accessing the real PLC.
 
+For PLC emulator to simulate different vendor's PLC we also follow the same style of the real PLC's configuration UI to create our fake interface. 
 
+For the M221 PLC Emulator, we follow the Schneider Electric EcoStruxure Machine Expert M22X PLC Configuration Interface and create the Deception interface as shown below:
+
+![](doc/img/rm_s08.png)
+
+For the S71200 PLC Emulator, we follow the Siemens SIMATIC S7-1200 / S7-1500 Web Server PLC Configuration interface and create the Deception interface as shown below:
+
+![](doc/img/rm_s09.png)All the deception interface also provide the PLC real time I/O state display, register and coil state, ladder logic diagram display, access limitation, network configuration,  user configuration and the user manual download function which mimic the real PLC's function to lure the attacker. 
 
 
 
