@@ -132,7 +132,28 @@ For the M221 PLC Emulator, we follow the Schneider Electric EcoStruxure Machine 
 
 For the S71200 PLC Emulator, we follow the Siemens SIMATIC S7-1200 / S7-1500 Web Server PLC Configuration interface and create the Deception interface as shown below:
 
-![](doc/img/rm_s09.png)All the deception interface also provide the PLC real time I/O state display, register and coil state, ladder logic diagram display, access limitation, network configuration,  user configuration and the user manual download function which mimic the real PLC's function to lure the attacker. 
+![](doc/img/rm_s09.png)All the deception interface also provide the PLC real time I/O state display, register and coil state, ladder logic diagram display, access limitation, network configuration,  user configuration and the user manual download function which mimic the real PLC's function to lure the attacker.  
+
+The M221 deception  web user interface is shown below:
+
+![](doc/img/rm_s10.png)
+
+The S71200 PLC deception  web user interface is shown below:
+
+![](doc/img/rm_s11.png)
+
+For the function of each deception PLC configuration web interface: 
+
+- **Honeypot Deception PLC Main Landing Page** : Web page provides the PLC module introduction, vendor information, basic PLC information such as IP address, protocol type, the PLC login interface, navigation to other data tabs and PLC user manual download. To access this page, login is not required. 
+- **Honeypot Deception PLC I/O state and ladder logic page **: Web page to show the real time PLC input and output connection pins' voltage, the registers used by PLC and register state, the coils used by the PLC and the coils state, the ladder logic currently executing by the PLC. Any logged in user can access this page. 
+- **Honeypot Deception PLC Access Permission Config Page** : Web page to reset , add or delated the PLC allow read and write IP address in the PLC permission control, only the admin account user can access this page. 
+- **Honeypot Deception PLC User Configuration page** : Web page to create, remove and update user and config the user access permission of the PLC, only the admin account user can access this page.
+
+When the honey port configuration finished, If the the attacker access any PLC's config page, their action will be record in the log and report to the PLC monitor hub, especially for the page which request admin account to login. If the attacker brute force break the password and use admin account access the page, the PLC will report attack to monitor immediately. 
+
+
+
+   
 
 
 
@@ -150,11 +171,9 @@ For the S71200 PLC Emulator, we follow the Siemens SIMATIC S7-1200 / S7-1500 Web
 
 
 
+Reference: 
 
-
-
-
-
+https://cache.industry.siemens.com/dl/files/496/68011496/att_959527/v2/68011496_Examples_for_S7WebServer_DOC_v21_en.pdf
 
 ------
 

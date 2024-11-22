@@ -143,7 +143,7 @@ class DataManger(object):
         # Init dictionary to store PLC controller data, key will be the controllerID,
         # value will be the agentController object
         self.controllerDict = {}
-        gv.gDebugPrint("Monitor Hub Data Manager Initialized.", logType=gv.LogType.INFO)
+        gv.gDebugPrint("Monitor Hub Data Manager Initialized.", logType=gv.LOG_INFO)
     
     #-----------------------------------------------------------------------------
     def addPlc(self, plcID, plcIP, protocol, ladderInfo=None):
@@ -156,7 +156,7 @@ class DataManger(object):
         """
         if plcID not in self.plcDict.keys():
             self.plcDict[plcID] = agentPLC(plcID, plcIP, protocol, ladderInfo=ladderInfo)
-            gv.gDebugPrint("Added a new PLC emulator: %s" % plcID, logType=gv.LogType.INFO)
+            gv.gDebugPrint("Added a new PLC emulator: %s" % plcID, logType=gv.LOG_INFO)
         else:
             self.plcDict[plcID].setIP(plcIP)
             self.plcDict[plcID].setProtocol(protocol)
@@ -177,13 +177,13 @@ class DataManger(object):
         """
         if controllerID not in self.controllerDict.keys():
             self.controllerDict[controllerID] = agentController(controllerID, controllerIP, protocol, plcID, plcIP)
-            gv.gDebugPrint("Added a new PLC controller: %s" % controllerID, logType=gv.LogType.INFO)
+            gv.gDebugPrint("Added a new PLC controller: %s" % controllerID, logType=gv.LOG_INFO)
         else:
             self.controllerDict[controllerID].setIP(controllerIP)
             self.controllerDict[controllerID].setProtocol(protocol)
             self.controllerDict[controllerID].setTargetPLCInfo(plcID, plcIP)
             gv.gDebugPrint("Updated existed PLC controller info: %s" % controllerID, 
-                           logType=gv.LogType.INFO)
+                           logType=gv.LOG_INFO)
 
     #-----------------------------------------------------------------------------
     def handleRequest(self, requestDict):
