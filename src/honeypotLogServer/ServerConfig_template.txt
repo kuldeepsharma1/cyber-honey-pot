@@ -28,6 +28,6 @@ LOG_PF:.txt
 
 #-----------------------------------------------------------------------------
 # Init the Flask app parameters
-FLASK_SER_PORT:5003
+FLASK_SER_PORT:5004
 FLASK_DEBUG_MD:False
 FLASK_MULTI_TH:True

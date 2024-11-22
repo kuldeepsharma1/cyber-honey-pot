@@ -153,13 +153,38 @@ When the honey port configuration finished, If the the attacker access any PLC's
 
 
 
-   
+#### Data Log System Design   
 
+As shown in the Emulator and controller design, each VM will run and, The log system includes 2 main part: 
 
+- **Log Archive Agent**: An agent program running on the PLC emulator or controller VM/Computer to regularly check the program and required system log data status and upload newly generated log files to the log archive server with the FTP client.
+- **Log Archive Server:** A service program running on the log database server to maintain several file structure trees identical to those on the client nodes, save the log files, and provide a web interface for blue team defenders to search and view the logs.
 
+The system workflow is shown below:
 
+![](doc/img/rm_s12.png)
 
+All the action and progress of the PLC emulator and the controller will be record in the log file, The log message will be include time step, log type (normal action, info, warning, error, alert) and the detailed log data as shown in the below example:
 
+```
+2024-11-21 14:38:01,209 INFO     PLC controller Controller01 Inited
+2024-11-21 14:38:01,209 INFO     PLC controller verification loop started
+2024-11-21 14:38:01,210 INFO     Start one around verification.
+2024-11-21 14:38:11,210 INFO     Random generate input: [False, False, False, True, True, True, True, False]
+2024-11-21 14:38:11,211 INFO     Expected output: [False, True, False, True, False, True, True, True]
+2024-11-21 14:38:13,034 INFO     Get PLC result: [False, True, False, True, False, True, True, True]
+2024-11-21 14:38:13,034 INFO     Start one around verification.
+2024-11-21 14:38:23,059 INFO     Random generate input: [False, True, True, False, True, False, True, True]
+2024-11-21 14:38:23,059 INFO     Expected output: [False, False, False, True, False, True, False, False]
+2024-11-21 14:38:24,883 INFO     Get PLC result: [False, False, False, True, False, True, False, False]
+2024-11-21 14:38:24,884 INFO     Start one around verification.
+```
+
+The blue team defender can use the Web interface to check, search and filter all the logs from the archive server's web UI as shown below:
+
+![](doc/img/rm_s13.png)
+
+In the main page, the blue team defender can check the total log size connection state and select the emulator or controller's log based on the ID. Then the page will switch to the component's log view page for user to filter, search and check the detailed log files contents. User can also do the further processing of the logs to integrated in their SIEM system or use the raw log file as the DFIR data set. 
 
 
 
