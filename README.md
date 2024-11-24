@@ -313,6 +313,60 @@ In the main page, the blue team defender can check the total log size, agent con
 
 ------
 
+### Design of Honeypot Monitor Hub
+
+The monitor hub will run in the orchestration network VM with a database to store all the PLC emulator and controller's report. The primary key is components ID. The monitor hub provides the http(s) POST API for the emulator and controller to upload the report data. The monitor hub also provide the web interface for blue team defender to check, search and view the report. The alert and notification are also provide by the web pages. The web overview is shown below:
+
+![](doc/img/rm_s14.png)
+
+The Monitor hub web provide 5 main pages:
+
+- **Monitor Hub landing page** : The main page to show the current overview of the honey system such as how many online PLC Simulator and Controller reported to the hub, any potential attack has been happened and total logs size for today has been achieve.  User can also navigate to the PLC controllers and PLC emulators view page or download the honeypot user manual from the landing page.
+- **PLC emulators view page** : The webpage with a table to show all the online emulator situation includes `PLC ID`,  ` Honeypot IP address`, `OT Protocol`, `Ladder logic module ID`, `Last Update Timestamp`, `Total online time` , `abnormal state report count`, `total report count` . 
+- **PLC Emulator detailed page** : The webpage show the detailed information of  a selected PLC emulator,  one table to show the latest 20 report and one table to highlight the warning and alert report. 
+- **PLC controllers view page** : The webpage with a table to show all the online controller situation includes `PLC ID`,  ` Honeypot IP address`, `OT Protocol`, `Ladder logic module ID`, `Last Update Timestamp`, `Total online time` , `target PLC ID`,  `target PLC IP address`, `abnormal state report count`, `total report count` . 
+- **PLC Emulator detailed page** : The webpage show the detailed information of  a selected PLC controller,  one table to show the latest 20 report and one table to highlight the warning and alert report. 
+
+To View the PLC emulator state, select the `PLC Emulator View` tab from the navigation bar and the click the PIC ID on in the table as shown below:
+
+![](doc/img/rm_s15.png)
+
+For the information detail please refer to below table:
+
+| Data Tag             | Data Description                                             |
+| -------------------- | ------------------------------------------------------------ |
+| **PLC ID**           | PLC Emulator Unique ID, Click the ID to go to the PLC Detail Page. |
+| **IP_address**       | PLC Emulator's Program VM IP address.                        |
+| **OT Protocol**      | OT Protocol used by the Controller to communicate with the PLC. |
+| **Ladder ID**        | Ladder ID of the PLC Emulator.                               |
+| **Last Update Time** | Ladder ID of the PLC Emulator.                               |
+| **Last Update T**    | Time stamp of the PLC Emulator last time update to the monitor hub. |
+| **Report Time**      | Time interval of the PLC Emulator reporting to the monitor hub. |
+| **Exception Count**  | Number of exceptions the PLC Emulator has reported to Monitor Hub. |
+| **Total Report**     | Total Number of state the PLC Emulator has report to Hub.    |
+
+To View the PLC emulator state, select the `PLC Controller View` tab from the navigation bar and the click the PIC ID on in the table as shown below:
+
+![](doc/img/rm_s16.png)
+
+For the information detail please refer to below table:
+
+| Data Tag            | Data Description                                             |
+| ------------------- | ------------------------------------------------------------ |
+| **Controller ID**   | PLC Controller Unique ID, Click the ID to go to the Controller Detail Page. |
+| **IP_address**      | Controller's Program VM IP address.                          |
+| **OT Protoco**l     | OT Protocol used by the Controller to communicate with the PLC. |
+| **Last Update T**   | Time stamp of the Controller last time update to the monitor hub. |
+| **Report Time**     | Time interval of the controller reporting to the monitor hub. |
+| **Target PLC ID**   | The PLC emulator's unique ID the Controller is communicating with. Click the ID to go the to PLC Detail Page. |
+| **Target PLC IP**   | The PLC emulator's program VM IP address.                    |
+| **Exception Count** | Number of exceptions the controller has reported to Monitor Hub |
+| **Total Report**    | Total Number of state the controller has report to Monitor Hub. |
+
+
+
+------
+
 
 
 
