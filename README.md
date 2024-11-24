@@ -229,9 +229,13 @@ The **OT deception layer** is designed to mimic a real industrial environment, p
 
 ![](doc/img/rm_s08.png)
 
+`Figure-07: UI Compare between Real Schneider Electric EcoStruxure Machine Expert and Honeypot Fake Deception PLC configure page, version v_0.1.3 (2024)`
+
 - **S71200 PLC Emulator**: Mimics the Siemens SIMATIC S7-1200/S7-1500 Web Server interface. As shown below:
 
 ![](doc/img/rm_s09.png)
+
+`Figure-08: UI Compare between Real Siemens SIMATIC web UI and Honeypot Fake Deception PLC configure page, version v_0.1.3 (2024)`
 
 **[4] Realistic Functionality**:
 
@@ -242,9 +246,13 @@ The M221 deception web user interface is shown below:
 
 ![](doc/img/rm_s10.png)
 
+`Figure-09: Honeypot Fake Deception M221 PLC configure page view , version v_0.1.3 (2024)`
+
 The S71200 PLC deception web user interface is shown below:
 
 ![](doc/img/rm_s11.png)
+
+`Figure-10: Honeypot Fake Deception S7-1200 PLC configure page view , version v_0.1.3 (2024)`
 
 For the function of each deception PLC configuration web interface:  
 
@@ -280,6 +288,8 @@ The system workflow is shown below:
 
 ![](doc/img/rm_s12.png)
 
+`Figure-11: Honeypot Log file/data archvie system workflow, version v_0.1.3 (2024)`
+
 The following steps summarize the system workflow:
 
 1. The **Log Archive Agent** collects log data from the **PLC Emulator** or **Controller**.
@@ -307,6 +317,8 @@ The blue team defenders can use the Web interface to check, search and filter al
 
 ![](doc/img/rm_s13.png)
 
+`Figure-12: Honeypot Log file/data archvie system Web UI overview, version v_0.1.3 (2024)`
+
 In the main page, the blue team defender can check the total log size, agent connection state and select the emulator or controller's log based on the PLC emulator or controller ID. Then the page will switch to the component's log view page for user to filter, search and check the detailed log files contents. User can also do the further processing of the logs to integrated in their SIEM system or use the raw log file as the DFIR data set. 
 
 
@@ -315,21 +327,31 @@ In the main page, the blue team defender can check the total log size, agent con
 
 ### Design of Honeypot Monitor Hub
 
-The monitor hub will run in the orchestration network VM with a database to store all the PLC emulator and controller's report. The primary key is components ID. The monitor hub provides the http(s) POST API for the emulator and controller to upload the report data. The monitor hub also provide the web interface for blue team defender to check, search and view the report. The alert and notification are also provide by the web pages. The web overview is shown below:
+The **Honeypot Monitor Hub** serves as the central system for collecting, storing, and visualizing reports from all PLC emulators and controllers. It facilitates real-time monitoring and alerting for the Blue Team, enabling efficient management of the honeypot environment and detection of potential threats. The **Monitor Hub** is deployed on a virtual machine within the orchestration network. It includes:
+
+- **Database**: Stores reports from PLC emulators and controllers, indexed by a unique **Component ID**.
+- **HTTP(S) POST API**: Allows PLC emulators and controllers to upload their report data.
+- **Web Interface**: Provides Blue Team defenders with web UI to view, search, and filter reports, monitor system alerts and notifications and navigate across detailed component views.
+
+The honeypot monitor hub web UI overview is shown below:
 
 ![](doc/img/rm_s14.png)
 
-The Monitor hub web provide 5 main pages:
+`Figure-13: Honeypot monitor hub landing page screen shot, version v_0.1.3 (2024)`
 
-- **Monitor Hub landing page** : The main page to show the current overview of the honey system such as how many online PLC Simulator and Controller reported to the hub, any potential attack has been happened and total logs size for today has been achieve.  User can also navigate to the PLC controllers and PLC emulators view page or download the honeypot user manual from the landing page.
-- **PLC emulators view page** : The webpage with a table to show all the online emulator situation includes `PLC ID`,  ` Honeypot IP address`, `OT Protocol`, `Ladder logic module ID`, `Last Update Timestamp`, `Total online time` , `abnormal state report count`, `total report count` . 
-- **PLC Emulator detailed page** : The webpage show the detailed information of  a selected PLC emulator,  one table to show the latest 20 report and one table to highlight the warning and alert report. 
-- **PLC controllers view page** : The webpage with a table to show all the online controller situation includes `PLC ID`,  ` Honeypot IP address`, `OT Protocol`, `Ladder logic module ID`, `Last Update Timestamp`, `Total online time` , `target PLC ID`,  `target PLC IP address`, `abnormal state report count`, `total report count` . 
-- **PLC Emulator detailed page** : The webpage show the detailed information of  a selected PLC controller,  one table to show the latest 20 report and one table to highlight the warning and alert report. 
+The Monitor Hub provides a comprehensive web interface with five main pages, as illustrated below:
 
-To View the PLC emulator state, select the `PLC Emulator View` tab from the navigation bar and the click the PIC ID on in the table as shown below:
+- **Monitor Hub Landing Page**: Main overview page of the honeypot system status, including: Total number of online PLC Simulators and Controllers, Notifications of potential attacks and Total size of logs collected for the current day. It also provides the quick access to `PLC Emulator View` and `PLC Controller View` pages, Honeypot user manual download.
+-  **PLC Emulators View Page**:  Webpage displays a table summarizing all **online emulators** with detailed information includes `PLC ID`, `Honeypot IP Address`, `OT Protocol`, `Ladder Logic Module ID`, `Last Update Timestamp`, `Total Online Time`, `Abnormal State Report Count`, and `Total Report Count`, it also provides navigation links to detailed views for individual emulators.
+- **PLC Emulator Detailed Page**: The webpage shows the detailed information of  a selected PLC emulator with one table to show the latest 20 reports and one table to highlight the warnings and alerts. 
+- **PLC Controllers View Page**: Webpage displays a table summarizing all **online controllers**, including:`Controller ID`, `Honeypot IP Address`, `OT Protocol`, `Target PLC ID`, `Target PLC IP Address`, `Last Update Timestamp`, `Total Online Time`, `Abnormal State Report Count`, and `Total Report Count`, it also provide links to detailed views for individual controllers and their target PLCs.
+- **PLC Controller Detailed Page**: The webpage shows the detailed information of  a selected PLC controller with one table to show the latest 20 reports and one table to highlight the warnings and alerts. 
+
+To View the PLC emulator state, select the `PLC Emulator View` tab from the navigation bar and the click the `PIC ID` in the table as shown below:
 
 ![](doc/img/rm_s15.png)
+
+`Figure-14: Honeypot monitor hub PLC emualtor state view page screen shot, version v_0.1.3 (2024)`
 
 For the information detail please refer to below table:
 
@@ -345,9 +367,11 @@ For the information detail please refer to below table:
 | **Exception Count**  | Number of exceptions the PLC Emulator has reported to Monitor Hub. |
 | **Total Report**     | Total Number of state the PLC Emulator has report to Hub.    |
 
-To View the PLC emulator state, select the `PLC Controller View` tab from the navigation bar and the click the PIC ID on in the table as shown below:
+To View the PLC controllers' state, select the `PLC Controller View` tab from the navigation bar and the click the Controller ID on in the table as shown below:
 
 ![](doc/img/rm_s16.png)
+
+`Figure-15: Honeypot monitor hub PLC controller state view page screen shot, version v_0.1.3 (2024)`
 
 For the information detail please refer to below table:
 
@@ -358,42 +382,20 @@ For the information detail please refer to below table:
 | **OT Protoco**l     | OT Protocol used by the Controller to communicate with the PLC. |
 | **Last Update T**   | Time stamp of the Controller last time update to the monitor hub. |
 | **Report Time**     | Time interval of the controller reporting to the monitor hub. |
-| **Target PLC ID**   | The PLC emulator's unique ID the Controller is communicating with. Click the ID to go the to PLC Detail Page. |
+| **Target PLC ID**   | The PLC emulator's unique ID the Controller is communicating with. Click   the ID to go the to PLC Detail Page. |
 | **Target PLC IP**   | The PLC emulator's program VM IP address.                    |
 | **Exception Count** | Number of exceptions the controller has reported to Monitor Hub |
 | **Total Report**    | Total Number of state the controller has report to Monitor Hub. |
 
+The Honeypot Monitor Hub is a critical component of the honeypot system, providing real-time insights, alerting, and detailed reports for defenders. By offering centralized management and an easy-to-use web interface, it enhances the ability of the Blue Team to monitor, analyze, and respond to potential threats effectively.
+
 
 
 ------
 
+### Design of Attack Alert and Notification 
 
-
-
-
-
-
-
-
-Reference: 
-
-https://cache.industry.siemens.com/dl/files/496/68011496/att_959527/v2/68011496_Examples_for_S7WebServer_DOC_v21_en.pdf
-
-------
-
-
-
-The PLC honey port System include below eight main features:
-
-- **[1] PLC Emulation** : the PLC emulator will provide customization of real OT protocol simulation, PLC ladder logic execution, PLC configuration interface and PLC information (like model type, firmware version, and IP address) to imitate various real-world PLCs. It mimics the control logic processing to respond to commands realistically, including simulating I/O operations and process control behavior.
-- **[2] Customizable OT network** : The system provide the flexible network communication configuration for green team or user to build simple (1 controller to 1 PLC ) or complex (N controllers to N PLCs) OT network structure. It allows the honeypot to be discovered on the network, acting like a real PLC-Controller system and Creates intentional vulnerabilities (e.g., open ports, weak authentication) to lure attackers.
-- **[3] Data Logger and Monitor** : All the action such as commands sent by attackers, responses given by the honeypot, and any unauthorized access attempts. will be recorded by the each PLC and controller module in each VM's log files and synchronize to the Log archive server in the orchestration network which Enables real-time tracking of interactions, allowing administrators to observe and respond to incidents.
-- **[4] Attack and Forensics Analysis** : Each components in the honeypot will report the forensic data such data access, packet traces, login and command logs, configuration changes and especially abnormal system behavior, for post-incident analysis.
-- **[5] Deception Layer for Attacker** : The controller will continuous generate periodically and random PLC state fetching and control request to create the illusion of a real-world complex OT control system engage attackers, at the same time each PLC will also provide the "fake" configuration interface which user interface is 90% similar as the vender's real PLC configureUI to make the attackers believe they are connecting to the real physical device.
-- **[6] Alerting and Notification System** : Each components will provide abnormal report function, if the component detected abnormal interaction with other port it will evaluate its own state and report to the monitor hub, such as if a port scan it touch to the system it will report a warning and if an authorization login or config change (change PLC allow read IP address) the PLC will report an alert. The monitor will evaluate the whole system state based all the components report then create the alert notification for the defense team.
-
-- **[7] Integration with Security Infrastructure** : The system provide different http API to transfer the data or integrate or connect with other Security Information and Event Management (SIEM) systems for centralized logging, alerting, and analysis.
--  **[8] Management Console** : the honeypot monitor hub provides different dashboard interface to Displays real-time data and alerts, allowing security teams to manage and analyze the honeypot's performance. User can also use different API interface to check,  configure, and control various aspects of the honeypot.
+The PLC emulator and controller will record all the interaction from other node 
 
 
 
@@ -401,59 +403,14 @@ The PLC honey port System include below eight main features:
 
 ------
 
+### System Setup and Usage
+
+If you want to use the system, please follow below section to setup and use the program.
 
 
 
 
 
+------
 
-
-
-We want to create a python PLC honey pot system with below features:
-
-### 1. **PLC Emulator**
-
-- **Protocol Emulation**: Simulates communication protocols (e.g., Modbus, S7Comm, DNP3, EtherNet/IP) to make the honeypot behave like a real PLC.
-- **Control Logic Simulation**: Mimics control logic processing to respond to commands realistically, including simulating I/O operations and process control behavior.
-- **Configurable Device Profile**: Allows customization of device settings like model type, firmware version, and IP address to imitate various real-world PLCs.
-
-### 2. **Network Interface**
-
-- **IP Configuration**: Allows the honeypot to be discovered on the network, acting like a real PLC.
-- **Vulnerability Simulation**: 
-- **Network Visibility**: Integrates with network infrastructure to monitor and capture traffic directed to the honeypot.
-
-### 3. **Data Logger and Monitor**
-
-- **Interaction Logging**: Records all communications, including commands sent by attackers, responses given by the honeypot, and any unauthorized access attempts.
-- **Packet Capturing**: Captures network traffic for deeper analysis of attack methods.
-- **Real-time Monitoring**: Enables real-time tracking of interactions, allowing administrators to observe and respond to incidents.
-
-### 4. **Alerting and Notification System**
-
-- **Automated Alerts**: Sends notifications to administrators when specific events or suspicious activities are detected (e.g., repeated login attempts, abnormal commands).
-- **Event-Based Triggers**: Configurable to trigger alerts based on predefined rules, making it easier to detect ongoing attacks.
-
-### 5. **Attack Analysis and Forensics Module**
-
-- **Data Analysis Tools**: Analyzes captured data to identify patterns and techniques used by attackers.
-- **Forensic Data Collection**: Gathers evidence, including packet traces, command logs, and system behavior, for post-incident analysis.
-- **Reporting**: Generates detailed reports on detected activities, providing insights into potential vulnerabilities and attack vectors.
-
-### 6. **Deception Layer**
-
-- **Fake System Environment**: Simulates a larger network or industrial setup, creating the illusion of a more complex control system to engage attackers.
-- **Bait Mechanisms**: Includes features like fake data, open services, and apparent vulnerabilities to make the system more appealing to attackers.
-
-### 7. **Integration with Security Infrastructure**
-
-- **SIEM Integration**: Connects with Security Information and Event Management (SIEM) systems for centralized logging, alerting, and analysis.
-- **Threat Intelligence Feeds**: Shares information on detected threats with threat intelligence platforms, helping to build a broader defense strategy.
-
-### 8. **Management Console**
-
-- **Configuration Management**: Provides a user interface to set up, configure, and control various aspects of the honeypot.
-- **Monitoring Dashboard**: Displays real-time data and alerts, allowing security teams to manage and analyze the honeypot's performance.
-- **Remote Access**: Enables administrators to manage the system remotely, ensuring flexibility in monitoring and response.
-
-These components work together to create a **comprehensive PLC honeypot system** that not only mimics real PLCs but also effectively captures attacker behaviors, gathers intelligence, and enhances the overall security posture of industrial environments.
+> last edit by LiuYuancheng (liu_yuan_cheng@hotmail.com) by 24/11/2024 if you have any problem, please send me a message. 
