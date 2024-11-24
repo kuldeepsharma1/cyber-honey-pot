@@ -10,12 +10,24 @@ As a cybersecurity honeypot, the system will detect unauthorized access attempts
 # Created:     2024/10/28
 # Version:     v_0.1.3
 # Copyright:   Copyright (c) 2024 LiuYuancheng
-# License:     MIT License      
+# License:     GNU Affero General Public License v3.0    
 ```
 
 **Table of Contents**
 
 [TOC]
+
+- [Python PLC Honeypot Project](#python-plc-honeypot-project)
+    + [Introduction](#introduction)
+      - [System Network Introduction](#system-network-introduction)
+      - [System Key Features Introduction](#system-key-features-introduction)
+    + [Design of PLC Emulator](#design-of-plc-emulator)
+    + [Design of PLC Controller](#design-of-plc-controller)
+    + [Design of Deception Layer](#design-of-deception-layer)
+    + [Design of Data Log System](#design-of-data-log-system)
+    + [Design of Honeypot Monitor Hub](#design-of-honeypot-monitor-hub)
+    + [Design of Attack Alert and Notification](#design-of-attack-alert-and-notification)
+    + [System Setup and Usage](#system-setup-and-usage)
 
 ------
 
@@ -288,7 +300,7 @@ The system workflow is shown below:
 
 ![](doc/img/rm_s12.png)
 
-`Figure-11: Honeypot Log file/data archvie system workflow, version v_0.1.3 (2024)`
+`Figure-11: Honeypot Log file/data archive system workflow, version v_0.1.3 (2024)`
 
 The following steps summarize the system workflow:
 
@@ -317,7 +329,7 @@ The blue team defenders can use the Web interface to check, search and filter al
 
 ![](doc/img/rm_s13.png)
 
-`Figure-12: Honeypot Log file/data archvie system Web UI overview, version v_0.1.3 (2024)`
+`Figure-12: Honeypot Log file/data archive system Web UI overview, version v_0.1.3 (2024)`
 
 In the main page, the blue team defender can check the total log size, agent connection state and select the emulator or controller's log based on the PLC emulator or controller ID. Then the page will switch to the component's log view page for user to filter, search and check the detailed log files contents. User can also do the further processing of the logs to integrated in their SIEM system or use the raw log file as the DFIR data set. 
 
@@ -351,7 +363,7 @@ To View the PLC emulator state, select the `PLC Emulator View` tab from the navi
 
 ![](doc/img/rm_s15.png)
 
-`Figure-14: Honeypot monitor hub PLC emualtor state view page screen shot, version v_0.1.3 (2024)`
+`Figure-14: Honeypot monitor hub PLC emulator state view page screen shot, version v_0.1.3 (2024)`
 
 For the information detail please refer to below table:
 
