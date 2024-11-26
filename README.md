@@ -407,9 +407,73 @@ The Honeypot Monitor Hub is a critical component of the honeypot system, providi
 
 ### Design of Attack Alert and Notification 
 
-The PLC emulator and controller will record all the interaction from other node 
+The PLC emulator and controller will record all the interaction from other node and create the report there are 5 types of report : components login monitor, own state report, normal state, warning state, alert state. The warning state and alert state are related attack detection and user can defined or change the type to build their own report of the function which they want to pick by the honeypot components. 
 
+To create a customized report action, use the monitor client's addReportDict API and pass in the report type and report message as parameters as shown below:
 
+```
+if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_WARN, "Added new user: %s" % userName)
+```
+
+For example if in the S7Comm server, if we want to trigger a alert report when the attacker use Nmap to scan PLC emulator's IP address and find the open https service port, we can add the report link as shown below:
+
+```
+@app.route('/')
+def index():
+    """ route to introduction index page."""
+    posts = {'page': 0,
+             'ipaddress': gv.gOwnIP,
+             'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+             }  # page index is used to highlight the left page slide bar.
+    # Add the report API top trigger host scanned report 
+   	if gv.iMonitorClient: gv.iMonitorClient.addReportDict(RPT_ALERT, "Some one try to scan web service" )
+    return render_template('index.html', posts=posts)
+```
+
+For the current version PLC emulator program, the warning and alert report provided are: 
+
+| Report Name                     | Report Type | Warning or alert triggered situation Description             |
+| ------------------------------- | ----------- | ------------------------------------------------------------ |
+| Service touched                 | warning     | Some one scanned the PLC emulators' http web service         |
+| Config access                   | warning     | Some one in the OT honeypot network use browser opened the PLC emulator's config page |
+| User log in                     | warning     | Attacker found a valid user name and try to log in           |
+| User logged  in                 | alert       | Attacker use brute false diction attack to break the user's password and login successful. |
+| State Page access               | alert       | Attacker try to use browser to check the PLC working state (register, coil) |
+| Admin log in                    | alert       | Attacker try to use the PLC default admin account in the real PLC manual to log in the PLC |
+| User logged  in                 | alert       | Attacker use the PLC default admin account and password in the real PLC manual to log in the PLC. |
+| ALL_R_LIST change               | alert       | Attacker try to modify (add or delete IP address) the PLC allow read IP white list. |
+| ALL_W_LIST change               | alert       | Attacker try to modify (add or delete IP address) the PLC allow write IP white list. |
+| ALL_R_LIST reset                | alert       | Attacker click the "allow read white list reset" button to reset the config in the PLC config page |
+| ALL_W_LIST reset                | alert       | Attacker click the "allow write white list reset" button to reset the config in the PLC config page |
+| User modify                     | alert       | Attacker try to change user password, user type and user name in the user config page. |
+| User create/remove              | alert       | Attacker try to create or delete a user from the PLC.        |
+| Manual download                 | warning     | Some one in the OT honeypot network try to download the PLC manual from the web. |
+| OT Data read commend (rejected) | alert       | Attacker try to send a data read OT protocol request from a IP not in the "allow read list" to fetch data from PLC and the request is rejected. |
+| OT Data read commend (accept)   | alert       | Attacker added his iP address in the allow read list and try to send a data read OT protocol request to fetch PLC data from PLC and the request is accepted . |
+| OT data set command (rejected)  | alert       | Attacker try to send a data read OT protocol request from a IP not in the "allow write list" to set data in PLC and the request is rejected. |
+| OT Data set commend (accept)    | alert       | Attacker added his iP address in the allow write list and try to send a data set OT protocol request to set data in  PLC and the request is accepted . Which means the PLC is under false data/cmd injection attack. |
+| High frequency request          | alert       | The PLC request PLC received every second is higher than the threshold, PLC may under DDoS attacker or attacker is try some command. |
+
+For the current version PLC Controller program, the warning and alert report provided are: 
+
+| Report Name                                 | Report Type | Warning or alert triggered situation Description             |
+| ------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| Target PLC offline                          | Alert       | Attacker make the controller's target PLC VM not response to the controller. |
+| Target PLC reject data fetch                | Alert       | Attacker removed the controller IP from the allow read white list. |
+| Target PLC reject data set                  | Alert       | Attacker removed the controller IP from the allow write white list. |
+| Target PLC response latency high            | warning     | The response of the target PLC is longer that the normal state threshold, the communication channel may under man in the middle attack. |
+| Target PLC state not match input change.    | Alert       | The PLC registers state not match the controller's input change request, attacker has injected false data in the PLC or did the mitm attack to modify the package data |
+| Target PLC state not match expected output. | Alert       | The PLC coils state not match the controller's calculated expected result, the attacker has injected false commend in the PLC or did the mitm attack to modify the package data. |
+
+For the Notification, when a alert or warning report is send to the monitor hub, in the Honey pot monitor hub, the defender can see the PLC's alert count increased of a PLC as shown in the below picture:
+
+![](doc/img/rm_s17.png) 
+
+If the defender wants to check the detail, they can click the PLC ID to access the PLC state detail page to check the alert detail as shown below:
+
+![](doc/img/rm_s18.png)
+
+In the alert hub the user can also call the Flask  `flash()` to make the latest alert pop up shown under the navigation bar.
 
 
 
