@@ -26,8 +26,12 @@ As a cybersecurity honeypot, the system will detect unauthorized access attempts
     + [Design of Deception Layer](#design-of-deception-layer)
     + [Design of Data Log System](#design-of-data-log-system)
     + [Design of Honeypot Monitor Hub](#design-of-honeypot-monitor-hub)
-    + [Design of Attack Alert and Notification](#design-of-attack-alert-and-notification)
-    + [System Setup and Usage](#system-setup-and-usage)
+    + [Design of Attack Alert and Notification Function](#design-of-attack-alert-and-notification-function)
+    + [System Setup](#system-setup)
+    + [System Deployment and Usage](#system-deployment-and-usage)
+    + [Reference Link](#reference-link)
+
+
 
 ------
 
@@ -521,14 +525,41 @@ Reference: https://github.com/LiuYuancheng/PLC_and_RTU_Simulator/issues/2#issuec
 
 **Program Source File List** 
 
-| Program File                 | Execution Env | Module Description                             |
-| ---------------------------- | ------------- | ---------------------------------------------- |
-| `src/lib/*.py`               | python 3      | All the library files.                         |
-| `src/Logs/*`                 | txt           | All the logs file for each sub system module.  |
-| `src/honeypotLogClient/*.py` | python 3      | The components log upload agent program files. |
-|                              |               |                                                |
+| Program File                     | Execution Env | Module Description                                           |
+| -------------------------------- | ------------- | ------------------------------------------------------------ |
+| `src/lib/*.py`                   | python 3      | All the library files.                                       |
+| `src/Logs/*`                     | txt           | All the logs file for each sub system module.                |
+| `src/honeypotLogClient/*.py`     | python 3      | The components' log files upload agent program files.        |
+| `src/honeypotLogServer/*.py`     | python 3      | The honeypot log file archive server program files.          |
+| `src/honeypotMonitor/*.py`       | python 3      | The honeypot monitor server program files.                   |
+| `src/modbusPlcController/*.py`   | python 3      | Program files of PLC Controller which uses Modbus-TCP protocol. |
+| `src/modbusPlcEmulator/*.py`     | python 3      | Program files of PLC Emulator which uses Modbus-TCP protocol. |
+| `src/s7commPlcController/*.py`   | python 3      | Program files of PLC Controller which uses S7comm protocol.  |
+| `src/s7commPlcEmulator/*.py`     | python 3      | Program files of PLC Emulator which uses S7comm protocol.    |
+| `src/runHoneyportMonitor.bat`    | Win           | Windows_OS honeypot monitor execution file.                  |
+| `src/runLogClient.bat`           | Win           | Windows_OS honeypot components log archive client execution file. |
+| `src/runLogServer.bat`           | Win           | Windows_OS honeypot log archive server execution file.       |
+| `src/runModbusPlcController.bat` | Win           | Windows_OS Modbus PLC controller execution file.             |
+| `src/runModbusPlcEmulator.bat`   | Win           | Windows_OS Modbus PLC emulator execution file.               |
+| `src/runS7commPlcController.bat` | Win           | Windows_OS S7Comm PLC controller execution file.             |
+| `src/runS7commPlcEmulator.bat`   | Win           | Windows_OS S7Comm PLC emulator execution file.               |
 
 
+
+------
+
+### System Deployment and Usage
+
+To deploy the honeypot and usage to detect the attack, please follow this user manual : [Link to honeypot user manual](UserManual.md)
+
+
+
+------
+
+### Reference Link
+
+- https://github.com/LiuYuancheng/Python_FTP_Server_and_Client
+- https://github.com/LiuYuancheng/PLC_and_RTU_Simulator
 
 
 
