@@ -6,7 +6,7 @@
     },
     "testuser": {
         "username": "testuser",
-        "password": "123",
+        "password": "P@ssw0rd",
         "usertype": "user"
     }
 }
