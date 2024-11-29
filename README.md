@@ -94,12 +94,12 @@ The program workflow diagram is shown below:
 
 The PLC Emulation Program is the core component and operates with four parallel threads to ensure modularity and real-time operation:
 
-**Flask Web Host Thread [PLC Config Web Interface Module] ** :
+**Flask Web Host Thread [PLC Config Web Interface Module]** :
 
 - Hosts a deceptive web interface mimicking a real vender's PLC configuration interface.
 - Tracks and logs all attackers' interactions, request, scanning and unauthorized access attempts.
 
-**Modbus and S7Comm Thread [PLC Modbus/S7comm Service Module] ** :
+**Modbus and S7Comm Thread [PLC Modbus/S7comm Service Module]** :
 
 - Starts a Modbus-TCP server or S7Comm server to handle incoming OT control requests.
 - Simulates vendor-specific protocol behaviors and the control rules (such as the data package and change limitation) to lure attackers.

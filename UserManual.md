@@ -2,7 +2,11 @@
 
 ![](doc/img/logo.png)
 
-This manual will show the detailed step about how to deploy the honeypot system in your environment and use the honeypot for some possible attack detection. This document  will show an example of deploying a simple mixed OT protocol honey pot with two 1-to-1 emulator and controller pair  as green team engineers and use this honey pot to show how to detect the red team attacker's false data injection attack path as blue team defenders. 
+Welcome to the **Python PLC Honeypot User Manual**! This manual provides detailed step-by-step instructions on how to deploy and use the honeypot system in your environment for detecting potential attacks on OT (Operational Technology) networks. The guide includes two main section:
+
+- **Honeypot deployment**: an example deployment of a mixed OT protocol honeypot, consisting of a simple setup with two 1-to-1 emulator-controller pairs. As a Green Team engineer, you'll learn how to configure and deploy the honeypot, ensuring seamless operation in your environment.
+
+- **Attack detection case study**: From the perspective of a Blue Team defender, this manual will walk you through how to monitor the system, analyze alerts, and detect sophisticated attack strategies such as false data injection or man-in-the-middle (MITM) attacks carried out by a Red Team attacker.
 
 **Table of Contents**
 
@@ -12,11 +16,11 @@ This manual will show the detailed step about how to deploy the honeypot system 
 
 ### Honeypot Deployment
 
-To deploy the honeypot system, you need at least 6 VMs to build 2 isolated network with 2 network switches. For each PLC controller and emulator VM, they need 2 network interface to join in the **OT Honeypot Network** and the **Orchestration Network**. The network topology is shown below:
+To deploy the honeypot system, a minimum of six virtual machines (VMs) or physical machine are required, along with two isolated networks connected through two network switches. Each VM for the PLC controllers and emulators must have two network interfaces: one for the **OT Honeypot Network** and another for the **Orchestration Network**. The network topology is illustrated below:
 
 ![](doc/img/um/um_s01.png)
 
-All the VMs OS we can use the Ubuntu22.04 and for the deploy sequence, please follow below table:
+The recommended operating system for all VMs is **Ubuntu 22.04**, ensuring compatibility with the honeypot modules and libraries. The deployment should follow the sequence outlined in the table below:
 
 | VM Name                      | Deploy Sequence | Honeypot IP    | Orchestration IP | Program/Module Needed                             |
 | ---------------------------- | --------------- | -------------- | ---------------- | ------------------------------------------------- |
@@ -27,17 +31,27 @@ All the VMs OS we can use the Ubuntu22.04 and for the deploy sequence, please fo
 | **S7comm PLC emulator VM**   | 5               | 172.23.155.208 | 172.23.20.8      | `lib`, `s7commPlcEmulator`, `honeypotLogClient`   |
 | **S7comm PLC Controller VM** | 6               | 172.23.155.207 | 172.23.20.7      | `lib`, `s7commPlcController`, `honeypotLogClient` |
 
-For the module needed, please refer to the module list in the Readme file's system setup `Program file list` section, for each VM please also follow the system setup to install the needed lib in the OS. 
+For details on the required modules, refer to the **Program File List** section in the system setup portion of the **README** file. Each VM must also have the necessary libraries installed according to the setup instructions provided.
 
 
 
-#### Deploy Honeypot Monitor hub VM
+#### Deploy Honeypot Monitor Hub VM
 
-**Step1 Setup Program**: Follow the program setup section to install the libs then create a folder `monitor/src` and copy `lib` , `honeypotMonitor` in it . 
+**Step1: Setup program files** 
 
-**Step2 Change the config file** :  Rename the `src/honeypotMonitor/config_template.txt` to `src/honeypotMonitor/config.txt` 
+- Follow the program setup instructions in readme file to install the required libraries.
+- Create a program directory structure: `monitor/src` in the machine or VM.
+- Copy the `lib` and `honeypotMonitor` modules into the `src` folder.
 
-**Step3 Run the program** : cd to the `honeypotMonitor`  folder and run the monitor hub program with cmd `sudo python3 monitorApp.py` , then in the  orchestration network open URL http://172.23.20.4:5000 to check whether the monitor hub online as shown below:
+**Step2: Change the application configuration file**
+
+- Rename the `src/honeypotMonitor/config_template.txt` to `src/honeypotMonitor/config.txt` 
+- Change the `FLASK_SER_PORT:5000` if you need to set another port for the monitor web (such as 8080). 
+
+**Step3: Run the Monitor Hub program**
+
+- Navigate(cd) to the `honeypotMonitor`  folder and run the monitor hub program with command `sudo python3 monitorApp.py` . 
+- In the orchestration network open a browser and visit  URL **http://172.23.20.4:5000** to  verify that the monitor hub is online, as shown below:
 
 ![](doc/img/um/um_s03.png)
 
@@ -45,11 +59,16 @@ For the module needed, please refer to the module list in the Readme file's syst
 
 #### Deploy Honeypot Log Archive VM
 
-**Step1 Setup Program**: Follow the program setup section to install the libs then create a folder `logServer/src` and copy `lib` , `honeypotLogServer`in it . 
+**Step 1: Setup the program**
 
-**Step2 Change the config file** :  Rename the `src/honeypotLogServer/ServerConfig_template.txt` to `src/honeypotLogServer/ServerConfig.txt`  and argent user credential file`src/honeypotLogServer/userRecord_template.json`  to `src/honeypotLogServer/userRecord.json`
+- Follow the program setup instructions in readme file to install the required libraries.
+- Create a directory structure: `logServer/src` in the machine or VM.
+- Copy the `lib` and `honeypotLogServer` modules into the `src` folder.
 
-Add the agent's login pass word in the `userRecord.json` as shown below: 
+**Step 2: Configure the application**
+
+- Rename the configuration files as follows : `src/honeypotLogServer/ServerConfig_template.txt` → `src/honeypotLogServer/ServerConfig.txt` and `src/honeypotLogServer/userRecord_template.json` → `src/honeypotLogServer/userRecord.json`
+- Update the agent's credentials in `userRecord.json` by adding the login password:
 
 ```json
 "agent": {
@@ -58,7 +77,7 @@ Add the agent's login pass word in the `userRecord.json` as shown below:
 }
 ```
 
-In the config file `ServerConfig.txt` change the test mode to `False` :
+- Modify the configuration file `ServerConfig.txt` to disable test mode by changing the following line:
 
 ```
 ...
@@ -67,7 +86,10 @@ line07: TEST_MODE:False
 ...
 ```
 
-**Step3 Run the program** : cd to the `logServer` folder and run the monitor hub program with cmd `sudo python3 logArchiveServerApp.py` , the in the  orchestration network open URL http://172.23.20.5:5003 to check whether the monitor hub online as shown below:
+**Step 3: Run the Log Archive Program**
+
+- Navigate to the `honeypotLogServer` folder and run the log archive server application with command `sudo python3 logArchiveServerApp.py`
+- In the orchestration network open a browser visit **[http://172.23.20.5:5003](http://172.23.20.5:5003/)** to verify that the log archive server is online, as shown below:
 
 ![](doc/img/um/um_s04.png)
 
@@ -75,11 +97,16 @@ line07: TEST_MODE:False
 
 #### Deploy Modbus PLC Emulator VM
 
-**Step1 Setup Program**: Follow the program setup section to install the libs then create a folder `plcEmulator/src` and copy `lib` , `honeypotLogClient` `modbusPlcEmulator` in it . 
+**Step 1: Setup the program**
 
-**Step2 Deploy the log archive client program** 
+- Follow the program setup instructions to install the required libraries.
+- Create a directory structure: `plcEmulator/src`.
+- Copy the following modules into the `src` folder: `lib`, `honeypotLogClient`, and `modbusPlcEmulator`.
 
-For the log archive agent program, rename the `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`  , add the PLC ID, IP address, log server IP, log folder name in the AgentConfig.txt as shown below : 
+**Step 2: Configure and Deploy the Log Archive Client Program**
+
+- Rename the file `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`.
+- Edit the `AgentConfig.txt` file and configure the following parameters:  `PLC ID`, `IP address`, `Log server IP`, `Log folder name` as shown below:
 
 ```
 #-----------------------------------------------------------------------------
@@ -92,23 +119,24 @@ FTP_SER_IP:172.23.20.5
 FTP_SER_PORT:8081
 USER_NAME:agent
 USER_PWD:P@ssw0rd
-
 ...
-
 #-----------------------------------------------------------------------------
 # local folder save the log files. 
-LOG_DIR:Logs
+LOG_DIR:../Logs
+...
 ```
 
-Run the log archive client program with cmd `python3 logArchiveAgent.py` then open the archive server's agent list page to check whether the log archive agent register and connect to the server
+- Run the log archive client program with command `python3 logArchiveAgent.py` 
+- Open the archive server's web agent list page (Agents View tag) to check whether the log archive agent has registered and connected successfully:
 
 ![](doc/img/um/um_s05.png)
 
 
 
-**Step3 Deploy the PLC Emulator Program** 
+**Step 3: Configure and Deploy the PLC Emulator Program**
 
-Rename the `src/modbusPlcEmulator/config_template.txt` to `src/modbusPlcEmulator/config.txt`,  add the PLC ID, IP address, controller IP in allow read and write list, monitor hub IP address and port as shown below
+- Rename the file `src/modbusPlcEmulator/config_template.txt` to `src/modbusPlcEmulator/config.txt`.
+- Edit the `PLC ID`, `IP address`, add `controller's IP address` in allow read and write list, edit `monitor hub IP address` and `port` as shown below:
 
 ```
 # This is the config file template for the PLC honeypot project's Modbus PLC 
@@ -145,13 +173,14 @@ FLASK_MULTI_TH:True
 USERS_RCD:users.json
 ```
 
-Rename the user credential file `src/modbusPlcEmulator/users_template.json` to  `src/modbusPlcEmulator/users.json`. 
-
-Run the modbus PLC emulator program with cmd `sudo python3 modbusPlcApp.py` , then in the honey pot network open URL http://172.23.155.209:5001 to check whether the monitor hub online as shown below:
+- Rename the user credential file `src/modbusPlcEmulator/users_template.json` to `src/modbusPlcEmulator/users.json`.
+- Run the Modbus PLC emulator program with command `sudo python3 modbusPlcApp.py`
+- Open a browser in the honeypot network and visit **[http://172.23.155.209:5001](http://172.23.155.209:5001/)** to verify that the emulator's web interface is online, as shown below:
 
 ![](doc/img/um/um_s06.png)
 
-Then go to the monitor hub to check whether the PLC emulator has registered in the monitor hub through the orchestration network as shown below:
+- Then access the monitor hub through the orchestration network and confirm that the PLC emulator has registered successfully, as shown below:
+
 
 ![](doc/img/um/um_s07.png)
 
@@ -159,11 +188,16 @@ Then go to the monitor hub to check whether the PLC emulator has registered in t
 
 #### Deploy Modbus PLC Controller VM
 
-**Step1 Setup Program**: Follow the program setup section to install the libs then create a folder `plcController/src` and copy `lib` , `honeypotLogClient`,  `modbusPlcController` in it . 
+**Step 1: Set Up the Program**
 
-**Step2 Deploy the log archive client program** 
+- Follow the program setup instructions in readme file to install the required libraries.
+- Create the directory structure: `plcController/src`.
+- Copy the following modules into the `src` folder: `lib`, `honeypotLogClient`, and `modbusPlcController`.
 
-For the log archive agent program, rename the `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`  , add the PLC ID, IP address, log server IP, log folder name in the AgentConfig.txt as shown below : 
+**Step 2: Configure and Deploy the Log Archive Client Program**
+
+- Rename the file `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`.
+- Edit the `AgentConfig.txt` file to include the following details:  `PLC ID`, `IP address`, `Log server IP`, `Log folder name`  as shown below:
 
 ```
 #-----------------------------------------------------------------------------
@@ -172,61 +206,57 @@ AGENT_ID:Controller01
 AGENT_IP:172.23.155.206
 #-----------------------------------------------------------------------------
 # FTP server info and login credentials, don't upload the credentials to the Github
-FTP_SER_IP:172.23.20.6
+FTP_SER_IP:172.23.20.5
 FTP_SER_PORT:8081
 USER_NAME:agent
 USER_PWD:P@ssw0rd
 ...
 #-----------------------------------------------------------------------------
 # local folder save the log files. 
-LOG_DIR:Logs
+LOG_DIR:../Logs
 ```
 
-Run the log archive client program with cmd `python3 logArchiveAgent.py` then open the archive server's agent list page to check whether the log archive agent register and connect to the server
+- Run the log archive client program with command `python3 logArchiveAgent.py` 
+- Open the log archive server's agent list page to verify that the log archive client has registered and connected successfully:
 
 ![](doc/img/um/um_s08.png)
 
 
 
-**Step3 Deploy the PLC Controller Program** 
+**Step 3: Configure and Deploy the PLC Controller Program**
 
-Rename the `src/modbusPlcController/config_template.txt` to `src/modbusPlcController/config.txt`,  add the PLC ID, IP address, controller IP in allow read and write list, monitor hub IP address and port as shown below
+- Rename the `src/modbusPlcController/config_template.txt` to `src/modbusPlcController/config.txt`,  
+- Edit the Controller ID, IP address, target PLC ID, IP, port  monitor hub IP address and port as shown below:
 
 ```
 # This is the config file template for the  the PLC honeypot project's Modbus PLC 
 # controller program <mbPlcControllerApp.py>
 # Setup the parameter with below format (every line follows <key>:<val> format, the
 # key can not be changed):
-
 #-----------------------------------------------------------------------------
 OWN_ID:Controller01
 OWN_IP:172.23.155.206
-
 # The OT protocol type string, "Modbus" or "S7Comm".
 PRO_TYPE:Modbus
-
 # The ladder logic file id used by this PLC controller.
 LADDER_ID:mbLadderLogic.py
-
 #-----------------------------------------------------------------------------
 # The PLC ID and IP address, the ID must be same as the 
 PLC_ID:modbusPLC01
 PLC_IP:172.23.155.209
 PLC_PORT:502
-
 # PLC data fetch time interval (sec)
 PLC_CINT:10
-
 #-----------------------------------------------------------------------------
 # define the monitor hub parameters : 
 MON_IP:172.23.20.4
 MON_PORT:5000
-
 # Time interval to report to the monitor hub in seconds:
 RPT_INTERVAL:5
 ```
 
-Then go to the monitor hub to check whether the PLC controller has registered in the monitor hub through the orchestration network as shown below:
+- Run the Modbus PLC controller program `sudo python3 mbPlcControllerApp.py`
+- Verify that the PLC controller is registered with the monitor hub by accessing the monitor hub through the orchestration network as shown below:
 
 ![](doc/img/um/um_s09.png)
 
@@ -234,11 +264,17 @@ Then go to the monitor hub to check whether the PLC controller has registered in
 
 #### Deploy S7Comm PLC Emulator VM
 
-**Step1 Setup Program**: Follow the program setup section to install the libs then create a folder `plcEmulator/src` and copy `lib` , `honeypotLogClient` `s7commPlcEmulator` in it . 
+**Step 1: Set Up the Program**
 
-**Step2 Deploy the log archive client program** 
+- Follow the program setup section to install the required libraries.
+- Create the directory `plcEmulator/src`.
+- Copy the following modules into the `src` folder:  `lib` , `honeypotLogClient` `s7commPlcEmulator` 
 
-For the log archive agent program, rename the `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`  , add the PLC ID, IP address, log server IP, log folder name in the AgentConfig.txt as shown below : 
+**Step 2: Configure and Deploy the Log Archive Client Program**
+
+Rename the file `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`.
+
+- Edit the `AgentConfig.txt` file with the following information: PLC ID, IP address, log server IP, log folder name as shown below:
 
 ```
 #-----------------------------------------------------------------------------
@@ -247,74 +283,75 @@ AGENT_ID:S7commPLC02
 AGENT_IP:172.23.155.208
 #-----------------------------------------------------------------------------
 # FTP server info and login credentials, don't upload the credentials to the Github
-FTP_SER_IP:172.23.20.6
+FTP_SER_IP:172.23.20.5
 FTP_SER_PORT:8081
 USER_NAME:agent
 USER_PWD:P@ssw0rd
 ...
 #-----------------------------------------------------------------------------
 # local folder save the log files. 
-LOG_DIR:Logs
+LOG_DIR:../Logs
 ```
 
-Run the log archive client program with cmd `python3 logArchiveAgent.py` then open the archive server's agent list page to check whether the log archive agent register and connect to the server same as Modbus PLC Emulator VM config section.
+- Run the log archive client program using the command: `python3 logArchiveAgent.py` 
+- Verify that the client registers and connects to the archive server by checking the agent list page. This process is similar to the configuration for the Modbus PLC Emulator VM.
 
-**Step3 Deploy the PLC Emulator Program** 
+**Step 3: Configure and Deploy the PLC Emulator Program**
 
-Rename the `src/s7CommPlcEmulator/config_template.txt` to `src/s7CommPlcEmulator/config.txt`,  add the PLC ID, IP address, controller IP in allow read and write list, monitor hub IP address and port as shown below
+- Rename the file `src/s7CommPlcEmulator/config_template.txt` to `src/s7CommPlcEmulator/config.txt`.
+- Edit the `config.txt` file with the following details: PLC ID, IP address, monitor hub IP address and port as shown below:
 
 ```
 # This is the config file template for the PLC honeypot project's S7Comm PLC 
 # emulator program <S7CommPlcApp.py>
 # Setup the parameter with below format (every line follows <key>:<value> format, the
 # key can not be changed):
-
 #-----------------------------------------------------------------------------
 # OwnID should not include space or other special characters.
 Own_ID:S7commPLC02
 Own_IP:172.23.155.208
-
 # The OT protocol type string, "Modbus" or "S7Comm".
 PRO_TYPE:S7Comm
-
 # The ladder logic file id used by this PLC emulator.
 LADDER_ID:s7LadderLogic.py
-
 #-----------------------------------------------------------------------------
 # define the monitor hub parameters : 
 MON_IP:172.23.20.4
 MON_PORT:5000
-
 # Time interval to report to the monitor hub in seconds:
 RPT_INTERVAL:5
-
 #-----------------------------------------------------------------------------
 # Init the PLC local web Flask app parameters
 FLASK_SER_PORT:5002
 FLASK_DEBUG_MD:False
 FLASK_MULTI_TH:True
-
 # The PLC local web  use credential record file 
 USERS_RCD:users.json
 ```
 
-Rename the user credential file `src/s7commPlcEmulator/users_template.json` to  `src/s7commPlcEmulator/users.json`. 
+- Rename the user credential file `src/s7CommPlcEmulator/users_template.json` to `src/s7CommPlcEmulator/users.json`.
 
-Run the S7Comm PLC emulator program with cmd `sudo python3 s7commPlcApp.py` , then in the honey pot network open URL http://172.23.155.208:5001 to check whether the monitor hub online as shown below:
+- Run the S7Comm PLC emulator program with command `sudo python3 s7commPlcApp.py` .
+- In the honeypot network, access the URL `http://172.23.155.208:5002` to verify that the PLC emulator is ready as shown below:
 
 ![](doc/img/um/um_s10.png)
 
-Then go to the monitor hub to check whether the PLC emulator has registered in the monitor hub through the orchestration network same as the step deploying the Modbus PLC Emulator VM. 
+- Check the monitor hub to ensure the emulator is registered. This process is similar to the Modbus PLC Emulator VM setup.
 
 
 
 #### Deploy S7Comm PLC Controller VM
 
-**Step1 Setup Program**: Follow the program setup section to install the libs then create a folder `plcController/src` and copy `lib` , `honeypotLogClient`,  `s7commPlcController` in it . 
+**Step 1: Set Up the Program**
 
-**Step2 Deploy the log archive client program** 
+- Follow the program setup section to install the required libraries.
+- Create the directory `plcController/src`.
+- Copy the following modules into the `src` folder: `lib` , `honeypotLogClient`,  `s7commPlcController` 
 
-For the log archive agent program, rename the `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`  , add the PLC ID, IP address, log server IP, log folder name in the AgentConfig.txt as shown below : 
+**Step 2: Configure and Deploy the Log Archive Client Program**
+
+- Rename the file `src/honeypotLogClient/AgentConfig_template.txt` to `src/honeypotLogClient/AgentConfig.txt`.
+- Edit the `AgentConfig.txt` file with the following details: `PLC ID`, `IP address`, `log server IP`, `log folder name` as shown below : 
 
 ```
 #-----------------------------------------------------------------------------
@@ -323,73 +360,70 @@ AGENT_ID:Controller02
 AGENT_IP:172.23.155.206
 #-----------------------------------------------------------------------------
 # FTP server info and login credentials, don't upload the credentials to the Github
-FTP_SER_IP:172.23.20.6
+FTP_SER_IP:172.23.20.5
 FTP_SER_PORT:8081
 USER_NAME:agent
 USER_PWD:P@ssw0rd
 ...
 #-----------------------------------------------------------------------------
 # local folder save the log files. 
-LOG_DIR:Logs
+LOG_DIR:../Logs
 ```
 
-Run the log archive client program with cmd `python3 logArchiveAgent.py` then open the archive server's agent list page to check whether the log archive agent register and connect to the server same as Modbus PLC Controller VM config section.
+- Run the log archive client program with command `python3 logArchiveAgent.py` 
+- Verify the client registration on the archive server, similar to the Modbus PLC Controller VM configuration.
 
-**Step3 Deploy the PLC Controller Program** 
+**Step 3: Configure and Deploy the PLC Controller Program**
 
-Rename the `src/s7CommPlcController/config_template.txt` to `src/s7CommPlcController/config.txt`,  add the PLC ID, IP address, controller IP in allow read and write list, monitor hub IP address and port as shown below
+- Rename the file `src/s7CommPlcController/config_template.txt` to `src/s7CommPlcController/config.txt`.
+- Edit the `config.txt` file with the following configurations: PLC ID, IP address,  monitor hub IP address and port as shown below:
 
 ```
 # This is the config file template for the  the PLC honeypot project's Modbus PLC 
 # controller program <mbPlcControllerApp.py>
 # Setup the parameter with below format (every line follows <key>:<val> format, the
 # key can not be changed):
-
 #-----------------------------------------------------------------------------
 OWN_ID:Controller02
-OWN_IP:172.23.155.206
-
+OWN_IP:172.23.155.207
 # The OT protocol type string, "Modbus" or "S7Comm".
 PRO_TYPE:S7Comm
-
 # The ladder logic file id used by this PLC controller.
 LADDER_ID:s7LadderLogic.py
-
 #-----------------------------------------------------------------------------
 # The PLC ID and IP address, the ID must be same as the 
 PLC_ID:S7commPLC02
 PLC_IP:172.23.155.208
 PLC_PORT:102
-
 # PLC data fetch time interval (sec)
 PLC_CINT:10
-
 #-----------------------------------------------------------------------------
 # define the monitor hub parameters : 
 MON_IP:172.23.20.4
 MON_PORT:5000
-
 # Time interval to report to the monitor hub in seconds:
 RPT_INTERVAL:5
 ```
 
-Then go to the monitor hub to check whether the PLC controller has registered in the monitor hub through the orchestration network same as the S7Comm PLC Emulator VM. 
+- Run the controller program with the command: `sudo python3 s7commPlcControllerApp.py`
+
+- Verify that the controller is registered in the monitor hub through the orchestration network. This step is similar to the S7Comm PLC Emulator VM setup.
 
 
 
 #### Deploy Ladder Logic In Emulator and Controller
 
-Both emulator and controller pair need to load the same ladder logic module, you can use the file `src\s7commPlcEmulator\s7LadderLogic.py` or file 
+Both the emulator and controller require the same ladder logic module to ensure proper simulation and control. You can use the provided example files, `src\s7commPlcEmulator\s7LadderLogic.py` or `src\modbusPlcEmulator\mbLadderLogic.py`, as templates to create your custom ladder logic.
 
-`src\modbusPlcEmulator\mbLadderLogic.py` as example to build the ladder logic.  As we use python program to simulate the ladder logic , this is an example we simulate the below ladder logic with 8 rung to get 8 input holding registers' value and change 8 coils:
+The ladder logic is implemented using Python, allowing you to simulate complex logic operations. For instance, the following example demonstrates an 8-rung ladder logic that processes the values of 8 input holding registers and updates 8 output coils accordingly.
 
-Ladder logic diagram:
+Ladder logic diagram example:
 
 ![](doc/img/um/um_s11.png)
 
-To simulate this logic, in the ladder logic module set the `runladderlogic()` function as shown in below example:
+To simulate the ladder logic in Python, implement the `runLadderLogic()` function in your ladder logic module as shown below:
 
-```
+```python
     #-----------------------------------------------------------------------------
     def runLadderLogic(self, regsList, coilList=None):
         """ Execute the ladder logic with the input holding register list and set 
@@ -415,6 +449,8 @@ To simulate this logic, in the ladder logic module set the `runladderlogic()` fu
         c7 = regsList[5]
         return [c0, c1, c2, c3, c4, c5, c6, c7]
 ```
+
+Both the PLC emulator and the controller will use this ladder logic module and call the `runLadderLogic()` function for execution and verification. This ensures consistency between the simulated PLC ladder logic and the control logic in the controller.
 
 
 
