@@ -162,7 +162,7 @@ class DataManger(object):
             self.plcDict[plcID].setProtocol(protocol)
             self.plcDict[plcID].setLadderInfo(ladderInfo)
             gv.gDebugPrint("Updated existed PLC emulator info: %s" % plcID, 
-                           logType=gv.LogType.INFO)
+                           logType=gv.LOG_INFO)
 
     #-----------------------------------------------------------------------------
     def addController(self, controllerID, controllerIP, protocol, plcID, plcIP):

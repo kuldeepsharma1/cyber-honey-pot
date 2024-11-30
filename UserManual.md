@@ -456,3 +456,134 @@ Both the PLC emulator and the controller will use this ladder logic module and c
 
 ------
 
+### Attack Detection Case Study
+
+This case study will use the deployed honey pot as an example to show how to detect the attacker's False Command Injection attack. For the attack warning and detection, please refer to read alert and notification section in the read me file.
+
+In the attack case study, the attacker will try to 3 steps to implement the attack:
+
+- Step1: Use the Nmap to fine the target PLC and the opened port. 
+- Step2: Try to read or write data to the PLC, then access the PLC's config page to modify the access permission. 
+- Step3: run the False command injection attack to inject the wrong PLC coil data to the PLC. 
+
+The defender will detect the attack path and based on the report shown on the monitor hub. The attack scenario design diagram is shown below:
+
+![](doc/img/um/um_s12.png)
+
+#### Attack Step 1: PLC Scan and Try command
+
+The attacker run Nmap to scan the port of the Modbus PLC's IP address as shown below: 
+
+![](doc/img/um/um_s13.png)
+
+He finds that the tcp port 502 (mbap service is on) so he can identify that there is a Modbus-TCP server is running and the server may be a PLC device. Then he also find that the tcp port 5001(commplex-link service is on) so he guess it may be a http(s) server. 
+
+The attacker did below action: 
+
+The attacker curl the http://172.23.155.209/5001 and https://172.23.155.209/5001 to see whether get any response. 
+
+Then he create a simple Modbus Read and write client to see whether can read data from the PLC
+
+```
+import time
+import modbusTcpCom
+hostIp = '172.23.155.209'
+hostPort = 502
+client = modbusTcpCom.modbusTcpClient(hostIp)
+print('Try to connect to the target PLC: %s' %str(hostIp))
+while not client.checkConn():
+    print('Try connect to the PLC')
+    print(client.getCoilsBits(0, 4))
+    time.sleep(0.5)
+# Start the attack
+print('Target PLC accept connection request.')
+time.sleep(1)
+while True:
+    print("Inject wrong data...")
+    client.setCoilsBit(4, False)
+    time.sleep(0.2)
+    client.setCoilsBit(6, True)
+    time.sleep(0.5)
+    if not rst: print("injection failed")
+```
+
+When he run the program he got the read and write failed as shown below (because the attacker's IP address 172.23.144.1 is not in the PLC's allow read and allow write list) :
+
+![](doc/img/um/um_s14.png)
+
+From the blue team side, then the defender checked the monitor hub's PLC ModbusPLC01's state page, then can find the Nmap http port scan action and the curl action are detected as port touch warning. (As shown below)
+
+![](doc/img/um/um_s15.png)
+
+
+
+#### Attack Step 2: Login PLC Config Page and Modify the access permission setting.
+
+The attacker use browser to access the PLC config page http://172.23.155.209/5001 , he finds the device may be a M221 plc, then he search online to find the PLC default username and password from this link: https://www.se.com/eg/en/faqs/FAQ000241261/
+
+He try the user name and password as shown below: 
+
+![](doc/img/um/um_s16.png)
+
+From the blue team side, then the defender checked the monitor hub's PLC ModbusPLC01's state page, and find that an user has login the PLC (currently we defined the login as normal, you can also change it to warning for admin user)
+
+![](doc/img/um/um_s17.png)
+
+After the attacker successful login, he try to user the access config page to add his attack node IP 172.23.144.1 into the PLC allow write list as shown below:
+
+![](doc/img/um/um_s18.png)
+
+From the blue team side, then the defender checked the monitor hub's PLC ModbusPLC01's state page, and find that some on is trying to add one unauthorized IP address in the PLC data access and modification list as shown below:
+
+![](doc/img/um/um_s19.png)
+
+And based on the report, they find the attacker's IP address 172.23.144.1.
+
+
+
+#### Attack Step3: run the FCI attack to inject the wrong coil data to PLC
+
+After finished the Step 2 now attack rerun his attack script and get the result as shown below:
+
+![](doc/img/um/um_s20.png)
+
+He also go to the PLC state page to confirm that the data he injected in the PLC are shown in the PLC state. 
+
+When the attack happens, From the blue team side, then the defender checked the monitor hub's PLC Controller01's state page, and find that some one did modified the PLC data from the alert report as shown below:
+
+![](doc/img/um/um_s21.png)
+
+The attack is detected. Now the blue team go to the log archive server to check the controller's latest log:
+
+![](doc/img/um/um_s22.png)
+
+From the log, the blue team defender found that the PLC output coil 04 and coil 06 are modified by the attacker as shown below:
+
+![](doc/img/um/um_s23.png)
+
+Now based on the alert report, the blue defender can deacidize the attacker's attack path and the attack time line as shown below:
+
+| Time stamp                              | Attack Action                                                |
+| --------------------------------------- | ------------------------------------------------------------ |
+| 2024-11-30 9:10:23 am                   | Attack try to scan the PLC-ModbusPLC01(172.23.155.209) ports. |
+| 2024-11-30 9:10:23 to 9:14:26           | Attacker try to prob the PLC-ModbusPLC01's http server.      |
+| 2024-11-30 9:16:26                      | Attacker access the PLC main landing page from the attack nodes browser |
+| 2024-11-30 9:18:06                      | Attacker use the PLC default admin account login to the PLC's configure interface. |
+| 2024-11-30 9:18:51                      | Attacker added his attack node's IP 172.23.144.1 in the PLC's allow write list. |
+| 2024-11-30 9:23:13                      | Attacker start the attack and try to modified the PLC data.  |
+| 2024-11-30 9:23:13 - 2024-11-30 9:56:13 | Attacker keep send the PLC coil data change command to over write coil idx04 to False and coil idx06 to True. |
+
+The detector can also access the PLC config page from the Orchestration Network to disable the user attacker used to login to the PLC, then reset the allow write list to prevent the attack continues. 
+
+
+
+------
+
+> last edit by LiuYuancheng (liu_yuan_cheng@hotmail.com) by 30/11/2024 if you have any problem, please send me a message. 
+
+
+
+
+
+
+
