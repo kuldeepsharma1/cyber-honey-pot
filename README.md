@@ -550,9 +550,9 @@ Reference: https://github.com/LiuYuancheng/PLC_and_RTU_Simulator/issues/2#issuec
 
 ### System Deployment and Usage
 
-To deploy the honeypot and usage to detect the attack, please follow this user manual : [Link to honeypot user manual](UserManual.md)
+To deploy the honeypot and usage to detect the attack, please follow this user manual : [Link to honeypot user manual](UserManual.md)  It will show how to deploy a honey pot with network topology below and use it do detect a simple Modbus-TCP False Command Injection Attack. 
 
-
+![](doc/img/um/title.png)
 
 ------
 

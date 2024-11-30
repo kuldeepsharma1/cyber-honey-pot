@@ -458,33 +458,37 @@ Both the PLC emulator and the controller will use this ladder logic module and c
 
 ### Attack Detection Case Study
 
-This case study will use the deployed honey pot as an example to show how to detect the attacker's False Command Injection attack. For the attack warning and detection, please refer to read alert and notification section in the read me file.
+This case study demonstrates how to detect and respond to a **Modbus-TCP False Command Injection Attack** using the deployed honeypot system (introduced in the previous section). For details on attack alerts and notifications, refer to the *Alert and Notification* section in the README file.
 
-In the attack case study, the attacker will try to 3 steps to implement the attack:
+In this scenario, an attacker attempts to compromise the target PLC in three key steps:
 
-- Step1: Use the Nmap to fine the target PLC and the opened port. 
-- Step2: Try to read or write data to the PLC, then access the PLC's config page to modify the access permission. 
-- Step3: run the False command injection attack to inject the wrong PLC coil data to the PLC. 
+1. **Identify the Target**: Use `Nmap` to scan the network, identify the PLC, and discover open ports.
+2. **Modify Access Permissions**: Attempt to read or write data to the PLC and access its configuration page to alter access permissions.
+3. **Execute the Attack**: Launch a False Command Injection attack to manipulate PLC coil data by injecting incorrect commands.
 
-The defender will detect the attack path and based on the report shown on the monitor hub. The attack scenario design diagram is shown below:
+The defender detects the attack path and uses the monitor hub’s reports to identify and respond to the attack. The diagram below illustrates the design of the attack scenario with the red team attack path and the blue team detection path: 
 
 ![](doc/img/um/um_s12.png)
 
-#### Attack Step 1: PLC Scan and Try command
+#### Attack Step 1: PLC Scanning and Command Attempt
 
-The attacker run Nmap to scan the port of the Modbus PLC's IP address as shown below: 
+The attacker initiates an **Nmap scan** to probe the target Modbus PLC's IP address(172.23.155.209) , as shown below:
 
 ![](doc/img/um/um_s13.png)
 
-He finds that the tcp port 502 (mbap service is on) so he can identify that there is a Modbus-TCP server is running and the server may be a PLC device. Then he also find that the tcp port 5001(commplex-link service is on) so he guess it may be a http(s) server. 
+From the scan, the attacker identifies 2 open ports:
 
-The attacker did below action: 
+- **TCP Port 502**: Associated with the `mbap` service, indicating a Modbus-TCP server potentially running on a PLC device.
+- **TCP Port 5001**: Associated with the `commplex-link` service, possibly hosting an HTTP(S) server.
 
-The attacker curl the http://172.23.155.209/5001 and https://172.23.155.209/5001 to see whether get any response. 
+The attacker performs the following actions:
 
-Then he create a simple Modbus Read and write client to see whether can read data from the PLC
+- Sends `curl` requests to `http://172.23.155.209:5001` and `https://172.23.155.209:5001` to verify the HTTP service response.
+- Creates a simple Modbus Read/Write client script to test read and write operations on the PLC:
 
-```
+```python
+# A simple modbus IO program, for the lib modbusTcpCom, please refer to this link:
+# https://github.com/LiuYuancheng/PLC_and_RTU_Simulator/blob/main/Modbus_PLC_Simulator/src/modbusTcpCom.py
 import time
 import modbusTcpCom
 hostIp = '172.23.155.209'
@@ -500,68 +504,70 @@ print('Target PLC accept connection request.')
 time.sleep(1)
 while True:
     print("Inject wrong data...")
-    client.setCoilsBit(4, False)
+    rst1 = client.setCoilsBit(4, False)
     time.sleep(0.2)
-    client.setCoilsBit(6, True)
+    rst2 = client.setCoilsBit(6, True)
     time.sleep(0.5)
-    if not rst: print("injection failed")
+    if rst1 is None and rst2 is None: print("injection failed")
 ```
 
-When he run the program he got the read and write failed as shown below (because the attacker's IP address 172.23.144.1 is not in the PLC's allow read and allow write list) :
+When running the script, read and write attempts fail because the attacker's IP (`172.23.144.1`) is not in the PLC’s **Allow Read/Write List**, the I/O request are rejected by the PLC.(As shown below)
 
 ![](doc/img/um/um_s14.png)
 
-From the blue team side, then the defender checked the monitor hub's PLC ModbusPLC01's state page, then can find the Nmap http port scan action and the curl action are detected as port touch warning. (As shown below)
+>  **Defender Response:** From the blue team side, the defenders check the monitor hub for `ModbusPLC01`'s state page and they can observe Port Touch Warnings for Nmap scans and `curl` actions as shown below:
 
 ![](doc/img/um/um_s15.png)
 
 
 
-#### Attack Step 2: Login PLC Config Page and Modify the access permission setting.
+#### Attack Step 2: Logging into PLC Config Page and Modifying Access Permissions
 
-The attacker use browser to access the PLC config page http://172.23.155.209/5001 , he finds the device may be a M221 plc, then he search online to find the PLC default username and password from this link: https://www.se.com/eg/en/faqs/FAQ000241261/
+The attacker accesses the PLC config page at `http://172.23.155.209:5001` using a browser. Upon identifying the device as an M221 PLC, the attacker searches online and finds default login credentials on this link:  https://www.se.com/eg/en/faqs/FAQ000241261/ . 
 
-He try the user name and password as shown below: 
+Using the default admin credentials, the attacker logs in, as shown:
 
 ![](doc/img/um/um_s16.png)
 
-From the blue team side, then the defender checked the monitor hub's PLC ModbusPLC01's state page, and find that an user has login the PLC (currently we defined the login as normal, you can also change it to warning for admin user)
+> **Defender Response:** The blue team observes login activity on the monitor hub. Although this is currently classified as normal, it can be configured to trigger a warning for admin user logins (based on the blue team's config):
 
 ![](doc/img/um/um_s17.png)
 
-After the attacker successful login, he try to user the access config page to add his attack node IP 172.23.144.1 into the PLC allow write list as shown below:
+After successful gaining access PLC config interface, the attacker modifies the **Allow Write List**, adding his attack node IP (`172.23.144.1`) as shown below: 
 
 ![](doc/img/um/um_s18.png)
 
-From the blue team side, then the defender checked the monitor hub's PLC ModbusPLC01's state page, and find that some on is trying to add one unauthorized IP address in the PLC data access and modification list as shown below:
+>  **Defender Response:** From the blue team side, the defender checked the monitor hub's PLC ModbusPLC01's state page, and find that some one is trying to add one unauthorized IP address in the PLC data access and modification list as shown below:
 
 ![](doc/img/um/um_s19.png)
 
-And based on the report, they find the attacker's IP address 172.23.144.1.
+>  And based on the report, the blue team defender finds the attacker's IP address 172.23.144.1.
 
 
 
-#### Attack Step3: run the FCI attack to inject the wrong coil data to PLC
+#### Attack Step 3: Executing False Command Injection (FCI)
 
-After finished the Step 2 now attack rerun his attack script and get the result as shown below:
+Having modified the access permissions, the attacker reruns the Modbus client script. This time, the PLC accepts the injected coil data, as shown:
 
 ![](doc/img/um/um_s20.png)
 
-He also go to the PLC state page to confirm that the data he injected in the PLC are shown in the PLC state. 
+The attacker also confirms the changes via the PLC state page.
 
-When the attack happens, From the blue team side, then the defender checked the monitor hub's PLC Controller01's state page, and find that some one did modified the PLC data from the alert report as shown below:
+> **Defender Response: **The blue team checks the monitor hub's PLC Controller01's state page and detects unauthorized data modifications in the PLC state page and views detailed alerts on the monitor hub(as shown below):
 
 ![](doc/img/um/um_s21.png)
 
-The attack is detected. Now the blue team go to the log archive server to check the controller's latest log:
+> The attack is detected. Now the blue team go to the log archive server web interface to check the controller's latest log:
 
 ![](doc/img/um/um_s22.png)
 
-From the log, the blue team defender found that the PLC output coil 04 and coil 06 are modified by the attacker as shown below:
+>  By accessing the log archive server, the defender reviews recent logs to identify specific changes made by the attacker. The logs confirm that **Coil 04** was set to `False` and **Coil 06** to `True` as shown below:
 
 ![](doc/img/um/um_s23.png)
 
-Now based on the alert report, the blue defender can deacidize the attacker's attack path and the attack time line as shown below:
+**Defender Response: Attack Timeline and Path Analysis**
+
+The defender reconstructs the attack timeline based on the alerts and logs, as shown below:
 
 | Time stamp                              | Attack Action                                                |
 | --------------------------------------- | ------------------------------------------------------------ |
@@ -573,17 +579,16 @@ Now based on the alert report, the blue defender can deacidize the attacker's at
 | 2024-11-30 9:23:13                      | Attacker start the attack and try to modified the PLC data.  |
 | 2024-11-30 9:23:13 - 2024-11-30 9:56:13 | Attacker keep send the PLC coil data change command to over write coil idx04 to False and coil idx06 to True. |
 
-The detector can also access the PLC config page from the Orchestration Network to disable the user attacker used to login to the PLC, then reset the allow write list to prevent the attack continues. 
+**Mitigation and Recovery**
 
+- **Access Control Reset**: From the Orchestration Network, the defender disables the attacker’s user account and restores the correct Allow Write List.
 
+- **Alert Escalation**: Configure login attempts by admin accounts as warnings.
+
+- **Log Review**: Continuously monitor logs for unauthorized changes and suspicious activity.
+
+  
 
 ------
 
 > last edit by LiuYuancheng (liu_yuan_cheng@hotmail.com) by 30/11/2024 if you have any problem, please send me a message. 
-
-
-
-
-
-
-
