@@ -479,9 +479,13 @@ When a warning or alert is sent to the Monitor Hub, the **Alert Count** for the 
 
 ![](doc/img/rm_s17.png) 
 
+`Figure-16: Honeypot monitor hub PLC alert count update, version v_0.1.3 (2024)`
+
 Clicking on the **PLC ID** redirects to the **PLC State Detail Page**, showing detailed logs of triggered alerts and their timestamps as shown below:
 
 ![](doc/img/rm_s18.png)
+
+`Figure-17: Honeypot monitor hub PLC alert detail notification page, version v_0.1.3 (2024)`
 
 Alerts can trigger real-time pop-up notifications (under the left navigation bar) using the `Flask flash()` method, ensuring defenders are immediately notified. The code example is shown below:
 

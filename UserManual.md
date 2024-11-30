@@ -8,9 +8,30 @@ Welcome to the **Python PLC Honeypot User Manual**! This manual provides detaile
 
 - **Attack detection case study**: From the perspective of a Blue Team defender, this manual will walk you through how to monitor the system, analyze alerts, and detect sophisticated attack strategies such as false data injection or man-in-the-middle (MITM) attacks carried out by a Red Team attacker.
 
+```
+# Created:     2024/11/30
+# Version:     v_0.1.3
+# Copyright:   Copyright (c) 2024 LiuYuancheng
+# License:     GNU Affero General Public License v3.0  
+```
+
 **Table of Contents**
 
 [TOC]
+
+- [Python PLC Honeypot User Manual](#python-plc-honeypot-user-manual)
+    + [Honeypot Deployment](#honeypot-deployment)
+      - [Deploy Honeypot Monitor Hub VM](#deploy-honeypot-monitor-hub-vm)
+      - [Deploy Honeypot Log Archive VM](#deploy-honeypot-log-archive-vm)
+      - [Deploy Modbus PLC Emulator VM](#deploy-modbus-plc-emulator-vm)
+      - [Deploy Modbus PLC Controller VM](#deploy-modbus-plc-controller-vm)
+      - [Deploy S7Comm PLC Emulator VM](#deploy-s7comm-plc-emulator-vm)
+      - [Deploy S7Comm PLC Controller VM](#deploy-s7comm-plc-controller-vm)
+      - [Deploy Ladder Logic In Emulator and Controller](#deploy-ladder-logic-in-emulator-and-controller)
+    + [Attack Detection Case Study](#attack-detection-case-study)
+      - [Attack Step 1: PLC Scanning and Command Attempt](#attack-step-1--plc-scanning-and-command-attempt)
+      - [Attack Step 2: Logging into PLC Config Page and Modifying Access Permissions](#attack-step-2--logging-into-plc-config-page-and-modifying-access-permissions)
+      - [Attack Step 3: Executing False Command Injection (FCI)](#attack-step-3--executing-false-command-injection--fci-)
 
 ------
 
@@ -19,6 +40,8 @@ Welcome to the **Python PLC Honeypot User Manual**! This manual provides detaile
 To deploy the honeypot system, a minimum of six virtual machines (VMs) or physical machine are required, along with two isolated networks connected through two network switches. Each VM for the PLC controllers and emulators must have two network interfaces: one for the **OT Honeypot Network** and another for the **Orchestration Network**. The network topology is illustrated below:
 
 ![](doc/img/um/um_s01.png)
+
+`Figure-01: Honeypot deployment example network topology diagram, version v_0.1.3 (2024)`
 
 The recommended operating system for all VMs is **Ubuntu 22.04**, ensuring compatibility with the honeypot modules and libraries. The deployment should follow the sequence outlined in the table below:
 
@@ -55,7 +78,7 @@ For details on the required modules, refer to the **Program File List** section 
 
 ![](doc/img/um/um_s03.png)
 
-
+`Figure-02: Honeypot deployment: Monitor Hub Landing Page, version v_0.1.3 (2024)`
 
 #### Deploy Honeypot Log Archive VM
 
@@ -93,7 +116,7 @@ line07: TEST_MODE:False
 
 ![](doc/img/um/um_s04.png)
 
-
+`Figure-03: Honeypot deployment: Log Archive Server Landing Page, version v_0.1.3 (2024)`
 
 #### Deploy Modbus PLC Emulator VM
 
@@ -131,7 +154,7 @@ LOG_DIR:../Logs
 
 ![](doc/img/um/um_s05.png)
 
-
+`Figure-04: Honeypot deployment: Confirm PLC registered in Log archive server, version v_0.1.3 (2024)`
 
 **Step 3: Configure and Deploy the PLC Emulator Program**
 
@@ -179,12 +202,14 @@ USERS_RCD:users.json
 
 ![](doc/img/um/um_s06.png)
 
+`Figure-05: Honeypot deployment: Confirm PLC emulator config page assessable, version v_0.1.3 (2024)`
+
 - Then access the monitor hub through the orchestration network and confirm that the PLC emulator has registered successfully, as shown below:
 
 
 ![](doc/img/um/um_s07.png)
 
-
+`Figure-06: Honeypot deployment: Confirm PLC emulator registered on the Monitor Hub, version v_0.1.3 (2024)`
 
 #### Deploy Modbus PLC Controller VM
 
@@ -221,7 +246,7 @@ LOG_DIR:../Logs
 
 ![](doc/img/um/um_s08.png)
 
-
+`Figure-07: Honeypot deployment: Confirm PLC controller registered in the Log Archive server, version v_0.1.3 (2024)`
 
 **Step 3: Configure and Deploy the PLC Controller Program**
 
@@ -260,7 +285,7 @@ RPT_INTERVAL:5
 
 ![](doc/img/um/um_s09.png)
 
-
+`Figure-08: Honeypot deployment: Confirm PLC controller registered on the Monitor Hub, version v_0.1.3 (2024)`
 
 #### Deploy S7Comm PLC Emulator VM
 
@@ -335,6 +360,8 @@ USERS_RCD:users.json
 - In the honeypot network, access the URL `http://172.23.155.208:5002` to verify that the PLC emulator is ready as shown below:
 
 ![](doc/img/um/um_s10.png)
+
+`Figure-09: Honeypot deployment: Confirm S7comm PLC emulator config page assessable,, version v_0.1.3 (2024)`
 
 - Check the monitor hub to ensure the emulator is registered. This process is similar to the Modbus PLC Emulator VM setup.
 
@@ -421,6 +448,8 @@ Ladder logic diagram example:
 
 ![](doc/img/um/um_s11.png)
 
+`Figure-10: Honeypot deployment: Test ladder diagram, version v_0.1.3 (2024)`
+
 To simulate the ladder logic in Python, implement the `runLadderLogic()` function in your ladder logic module as shown below:
 
 ```python
@@ -470,11 +499,15 @@ The defender detects the attack path and uses the monitor hub’s reports to ide
 
 ![](doc/img/um/um_s12.png)
 
+`Figure-11: Honeypot Attack Detection: attack Path and detection path , version v_0.1.3 (2024)`
+
 #### Attack Step 1: PLC Scanning and Command Attempt
 
 The attacker initiates an **Nmap scan** to probe the target Modbus PLC's IP address(172.23.155.209) , as shown below:
 
 ![](doc/img/um/um_s13.png)
+
+`Figure-12: Honeypot Attack Detection: attacker nmap scan result, version v_0.1.3 (2024)`
 
 From the scan, the attacker identifies 2 open ports:
 
@@ -514,6 +547,8 @@ while True:
 When running the script, read and write attempts fail because the attacker's IP (`172.23.144.1`) is not in the PLC’s **Allow Read/Write List**, the I/O request are rejected by the PLC.(As shown below)
 
 ![](doc/img/um/um_s14.png)
+
+`Figure-13: Honeypot Attack Detection: Modbus-TCP data read and write script result, version v_0.1.3 (2024)`
 
 >  **Defender Response:** From the blue team side, the defenders check the monitor hub for `ModbusPLC01`'s state page and they can observe Port Touch Warnings for Nmap scans and `curl` actions as shown below:
 
