@@ -63,6 +63,13 @@ gv.iMonitorClient.start()
 # Init the Web UI thread.
 app = createApp()
 
+# Please un-comment this function if you want to pick any http request such as normal curl
+#@app.before_request
+#def before_request():
+#    """Triggered by any request to the web server such as curl"""
+#    if gv.iMonitorClient: 
+#        gv.iMonitorClient.addReportDict(RPT_ALERT, "A http request is send to PLC emulator.")
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 # web request handling functions.
