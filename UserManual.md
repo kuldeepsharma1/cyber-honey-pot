@@ -554,7 +554,7 @@ When running the script, read and write attempts fail because the attacker's IP 
 
 ![](doc/img/um/um_s15.png)
 
-
+`Figure-14: Honeypot Attack Detection: nmap and curl detection, version v_0.1.3 (2024)`
 
 #### Attack Step 2: Logging into PLC Config Page and Modifying Access Permissions
 
@@ -564,17 +564,25 @@ Using the default admin credentials, the attacker logs in, as shown:
 
 ![](doc/img/um/um_s16.png)
 
+`Figure-15: Honeypot Attack: Attacker login the PLC with default credentials, version v_0.1.3 (2024)` 
+
 > **Defender Response:** The blue team observes login activity on the monitor hub. Although this is currently classified as normal, it can be configured to trigger a warning for admin user logins (based on the blue team's config):
 
 ![](doc/img/um/um_s17.png)
+
+`Figure-16: Honeypot Attack Detection: Detect the admin user login , version v_0.1.3 (2024)` 
 
 After successful gaining access PLC config interface, the attacker modifies the **Allow Write List**, adding his attack node IP (`172.23.144.1`) as shown below: 
 
 ![](doc/img/um/um_s18.png)
 
+`Figure-17: Honeypot Attack: Attacker add the attack node IP in the allow write list, version v_0.1.3 (2024)` 
+
 >  **Defender Response:** From the blue team side, the defender checked the monitor hub's PLC ModbusPLC01's state page, and find that some one is trying to add one unauthorized IP address in the PLC data access and modification list as shown below:
 
 ![](doc/img/um/um_s19.png)
+
+`Figure-18: Honeypot Attack Detection: Detect the attacker modified the PLC allow write list , version v_0.1.3 (2024)` 
 
 >  And based on the report, the blue team defender finds the attacker's IP address 172.23.144.1.
 
@@ -586,19 +594,27 @@ Having modified the access permissions, the attacker reruns the Modbus client sc
 
 ![](doc/img/um/um_s20.png)
 
+`Figure-19: Honeypot Attack: attacker run the false command injection attack script , version v_0.1.3 (2024)` 
+
 The attacker also confirms the changes via the PLC state page.
 
 > **Defender Response: **The blue team checks the monitor hub's PLC Controller01's state page and detects unauthorized data modifications in the PLC state page and views detailed alerts on the monitor hub(as shown below):
 
 ![](doc/img/um/um_s21.png)
 
+`Figure-20: Honeypot Attack Detection: Detect the PLC output not match the controller's expected result, version v_0.1.3 (2024)` 
+
 > The attack is detected. Now the blue team go to the log archive server web interface to check the controller's latest log:
 
 ![](doc/img/um/um_s22.png)
 
+`Figure-21: Honeypot Attack Detection: Check the PLC controller's Log file, version v_0.1.3 (2024)` 
+
 >  By accessing the log archive server, the defender reviews recent logs to identify specific changes made by the attacker. The logs confirm that **Coil 04** was set to `False` and **Coil 06** to `True` as shown below:
 
 ![](doc/img/um/um_s23.png)
+
+`Figure-21: Honeypot Attack Detection: Detect injected false command from the Log file, version v_0.1.3 (2024)` 
 
 **Defender Response: Attack Timeline and Path Analysis**
 

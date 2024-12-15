@@ -14,7 +14,7 @@
 # License:     MIT License
 #-----------------------------------------------------------------------------
 
-import modbusPlcGlobal as gv
+import s7commPlcGlobal as gv
 import monitorClient
 from monitorClient import RPT_ALERT, PLC_TYPE
 
