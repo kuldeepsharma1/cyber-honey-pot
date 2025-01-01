@@ -1,0 +1,87 @@
+version: "3.9"
+services:
+  monitor-hub:
+    image: monitor
+    ports:
+      - "5000:5000"
+    networks:
+      orchestration:
+        ipv4_address: 172.23.20.4
+    volumes:
+      - ./src:/app/src/monitor
+    # Uncomment the following line if needed
+    # command: ["python3", "/app/src/honeypotMonitor/monitorApp.py"]
+
+  log-archive:
+    image: logserver
+    ports:
+      - "5004:5004"
+    networks:
+      orchestration:
+        ipv4_address: 172.23.20.5
+    volumes:
+      - ./src:/app/src/logserver
+    # Uncomment the following line if needed
+    # command: ["python3", "/app/src/honeypotLogServer/logArchiveServerApp.py"]
+
+  modbus-emulator:
+    image: plcemulator
+    ports:
+      - "5001:5001"
+    networks:
+      ot-honeypot:
+        ipv4_address: 172.23.155.209
+      orchestration:
+        ipv4_address: 172.23.20.9
+    volumes:
+      - ./src:/app/src/plcemulator
+    # Uncomment the following line if needed
+    # command: ["python3", "/app/src/modbusPlcEmulator/modbusPlcApp.py"]
+
+  modbus-controller:
+    image: plccontroller
+    networks:
+      ot-honeypot:
+        ipv4_address: 172.23.155.206
+      orchestration:
+        ipv4_address: 172.23.20.6
+    volumes:
+      - ./src:/app/src/plccontroller
+    # Uncomment the following line if needed
+    # command: ["python3", "/app/src/modbusPlcController/mbPlcControllerApp.py"]
+
+  s7comm-emulator:
+    image: splcemulator
+    ports:
+      - "5002:5002"
+    networks:
+      ot-honeypot:
+        ipv4_address: 172.23.155.208
+      orchestration:
+        ipv4_address: 172.23.20.8
+    volumes:
+      - ./src:/app/src/splcemulator
+    # Uncomment the following line if needed
+    # command: ["python3", "/app/src/s7commPlcEmulator/s7commPlcApp.py"]
+
+  s7comm-controller:
+    image: splccontroller
+    networks:
+      ot-honeypot:
+        ipv4_address: 172.23.155.207
+      orchestration:
+        ipv4_address: 172.23.20.7
+    volumes:
+      - ./src:/app/src/splccontroller
+    # Uncomment the following line if needed
+    # command: ["python3", "/app/src/s7commPlcController/s7commPlcControllerApp.py"]
+
+networks:
+  ot-honeypot:
+    ipam:
+      config:
+        - subnet: 172.23.155.0/24
+  orchestration:
+    ipam:
+      config:
+        - subnet: 172.23.20.0/24
