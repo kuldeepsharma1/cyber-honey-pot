@@ -89,11 +89,15 @@ The `s7commcontroller` oversees interactions with the S7 communication protocol 
 cd s7commcontroller
 docker build -t splccontroller .
 ```
+```bash
+# Run one command from below first run to run in interactive mode or second to run in Background
+docker compose up 
 
+docker compose up -d 
+```
 ---
 
 ## Summary
 After completing the steps above, you will have built Docker images for all components of the Python PLC Honeypot. These images enable the deployment of a simulated OT environment, allowing for attack analysis, data collection, and training in a secure, virtualized setting.
 
 For additional details on deployment and usage, refer to the project documentation or contact the project maintainers.
-```
