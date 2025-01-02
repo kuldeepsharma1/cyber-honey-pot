@@ -1,4 +1,4 @@
-```markdown
+
 # Python PLC Honeypot Project
 
 The **Python PLC Honeypot Project** is a distributed cybersecurity solution designed to simulate SCADA (Supervisory Control and Data Acquisition) network behaviors between Programmable Logic Controllers (PLCs) and Human-Machine Interfaces (HMIs). This honeypot replicates an Operational Technology (OT) environment to attract and analyze potential cyberattacks. 
@@ -30,7 +30,7 @@ Before starting, ensure you have the following installed:
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
 
----
+
 
 ### 1. Building Docker Images
 
