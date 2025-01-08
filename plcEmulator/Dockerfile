@@ -20,7 +20,7 @@ COPY ./src /app/src
 RUN pip3 install --no-cache-dir -r /app/src/requirements.txt && \
     pip3 install --no-cache-dir --force-reinstall Flask Jinja2
 # Command to execute the application
-
+RUN pip install --upgrade flask-login
 CMD ["python3", "/app/src/modbusPlcEmulator/modbusPlcApp.py"]
 
 EXPOSE 5001

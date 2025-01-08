@@ -20,6 +20,6 @@ COPY ./src /app/src
 RUN pip3 install --no-cache-dir -r /app/src/requirements.txt && \
     pip3 install --no-cache-dir --force-reinstall Flask Jinja2
 # Command to execute the application
-CMD ["python3", "/app/src/s7commcontroller/s7commPlcControllerApp.py"]
+CMD ["python3", "/app/src/s7commPlcController/s7commPlcControllerApp.py"]
 
 EXPOSE 102

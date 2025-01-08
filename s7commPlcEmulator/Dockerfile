@@ -19,6 +19,7 @@ COPY ./src /app/src
 # Install Python requirements (adjust the path if needed), and reinstall flask and jinja2
 RUN pip3 install --no-cache-dir -r /app/src/requirements.txt && \
     pip3 install --no-cache-dir --force-reinstall Flask Jinja2
+RUN pip install --upgrade flask-login
 # Command to execute the application
 CMD ["python3", "/app/src/s7commPlcEmulator/s7commPlcApp.py"]
 

@@ -1,6 +1,6 @@
 directory_tree==1.0.0
 Flask==1.1.2
-Flask_Login==0.6.2
+Flask_Login==0.6.3
 pyftpdlib==1.5.10
 pyModbusTCP==0.3.0
 python_snap7==1.3
