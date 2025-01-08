@@ -58,15 +58,7 @@ cd plcEmulator
 docker build -t plcemulator .
 ```
 
-#### 1.4 Honeypot Log Client Agent
-This agent logs and transmits honeypot activity data.
-
-```bash
-cd plcEmulator
-docker build -t honeypotlogclientagent -f Dockerfile.agent .
-```
-
-#### 1.5 PLC Controller
+#### 1.4 PLC Controller
 The `plcController` manages communication and commands sent to the PLC Emulator.
 
 ```bash
@@ -74,7 +66,7 @@ cd plcController
 docker build -t plccontroller .
 ```
 
-#### 1.6 S7 Communication PLC Emulator
+#### 1.5 S7 Communication PLC Emulator
 This component emulates Siemens S7 communication protocol behavior.
 
 ```bash
@@ -82,7 +74,7 @@ cd s7commPlcEmulator
 docker build -t splcemulator .
 ```
 
-#### 1.7 S7 Communication Controller
+#### 1.6 S7 Communication Controller
 The `s7commcontroller` oversees interactions with the S7 communication protocol emulator.
 
 ```bash
