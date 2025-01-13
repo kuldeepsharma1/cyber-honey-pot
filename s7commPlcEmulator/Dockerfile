@@ -12,13 +12,15 @@ RUN apt-get update && \
     apt-get clean
 
 # Install python-snap7 and other Python dependencies
-RUN pip3 install --no-cache-dir python-snap7==1.3 Flask Jinja2 flask-login
+RUN pip3 install python-snap7==1.3
 
 # Copy project source code
 COPY ./src /app/src
 
 # Install Python requirements (adjust the path if needed)
-RUN pip3 install --no-cache-dir -r /app/src/requirements.txt
+# Install Python requirements (adjust the path if needed), and reinstall flask and jinja2
+RUN pip3 install --no-cache-dir -r /app/src/requirements.txt && \
+    pip3 install --no-cache-dir --force-reinstall Flask Jinja2
 
 # Expose necessary ports
 EXPOSE 5002
