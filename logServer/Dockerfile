@@ -22,4 +22,4 @@ RUN pip3 install --no-cache-dir -r /app/src/requirements.txt && \
 # Command to execute the application
 CMD ["python3", "/app/src/honeypotLogServer/logArchiveServerApp.py"]
 
-EXPOSE 5004
+EXPOSE 5003
